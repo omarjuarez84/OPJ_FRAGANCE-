@@ -167,8 +167,20 @@
                     <div class="overlay"></div>
                 </div>
                 <div class="relative max-w-7xl mx-auto px-4 py-20 text-center z-10">
-                    <h1 class="serif-font text-4xl sm:text-6xl font-normal tracking-wide max-w-4xl mx-auto leading-tight mb-6">Tu Estilo. Tu Esencia.</h1>
-                    <p class="text-stone-300 text-lg max-w-2xl mx-auto mb-10 font-light leading-relaxed">Alta perfumería, pulsos de plata exclusivos y gorras premium.</p>
+                    <h1 class="serif-font text-4xl sm:text-5xl md:text-6xl font-bold tracking-wide max-w-5xl mx-auto leading-tight mb-6 drop-shadow-xl text-white">Perfumes Originales, Decants y Accesorios Premium</h1>
+                    <p class="text-stone-100 text-lg md:text-xl max-w-3xl mx-auto mb-10 font-medium leading-relaxed drop-shadow-md">Envíos a todo México &bull; Decants desde $65 &bull; Productos 100% originales</p>
+                </div>
+            </div>
+
+            <div class="bg-stone-900 border-t border-stone-700 py-3 overflow-hidden shadow-lg z-20 relative">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="flex flex-wrap justify-center items-center gap-x-6 gap-y-3 text-[10px] md:text-xs font-bold uppercase tracking-widest text-stone-200">
+                        <div class="flex items-center whitespace-nowrap"><span class="text-lg mr-2">✅</span> Productos originales</div>
+                        <div class="flex items-center whitespace-nowrap"><span class="text-lg mr-2">🚚</span> Envíos a todo México</div>
+                        <div class="flex items-center whitespace-nowrap"><span class="text-lg mr-2">💳</span> Transferencia y efectivo</div>
+                        <div class="flex items-center whitespace-nowrap"><span class="text-lg mr-2">📦</span> Empaque seguro</div>
+                        <div class="flex items-center whitespace-nowrap"><span class="text-lg mr-2">⭐</span> Atención personalizada</div>
+                    </div>
                 </div>
             </div>
 
@@ -199,7 +211,10 @@
                                 <img src="https://i.postimg.cc/QtqShXGp/myself-yves-saint-laurent-eau-de-parfum-ferfi-parfum-3.webp" loading="lazy" class="max-h-40 object-contain drop-shadow-md" alt="MYSLF">
                             </div>
                             <div class="w-3/5 p-6 flex flex-col justify-center">
-                                <span class="text-xs uppercase tracking-wider text-stone-400 font-semibold">Yves Saint Laurent</span>
+                                <span class="text-xs uppercase tracking-wider text-stone-400 font-semibold flex items-center">
+                                    Yves Saint Laurent 
+                                    <span class="bg-stone-800 text-white text-[9px] px-2 py-0.5 rounded ml-2 uppercase tracking-widest shadow-sm">Diseñador</span>
+                                </span>
                                 <h3 class="font-bold text-lg text-stone-950 mt-1">MYSLF 3.4oz EDP</h3>
                                 <div class="info-overlay text-sm text-stone-600">Una declaración de masculinidad moderna. Decants disponibles desde 3ml.</div>
                                 <span class="text-lg font-bold text-stone-900 mt-2">$2,600 MXN</span>
@@ -210,7 +225,10 @@
                                 <img src="https://i.postimg.cc/YCfvXj1K/imagessss.webp" loading="lazy" class="max-h-40 object-contain drop-shadow-md" alt="Precieux">
                             </div>
                             <div class="w-3/5 p-6 flex flex-col justify-center">
-                                <span class="text-xs uppercase tracking-wider text-stone-400 font-semibold">Armaf</span>
+                                <span class="text-xs uppercase tracking-wider text-stone-400 font-semibold flex items-center">
+                                    Armaf 
+                                    <span class="bg-amber-600 text-white text-[9px] px-2 py-0.5 rounded ml-2 uppercase tracking-widest shadow-sm">Árabe</span>
+                                </span>
                                 <h3 class="font-bold text-lg text-stone-950 mt-1">Club De Nuit Precieux 1</h3>
                                 <div class="info-overlay text-sm text-stone-600">Fragancia opulenta, frutal y ahumada. Alta duración y proyección.</div>
                                 <span class="text-lg font-bold text-stone-900 mt-2">$1,500 MXN</span>
@@ -373,7 +391,7 @@
             </div>
             <div class="md:w-7/12 p-6 md:p-8 bg-white overflow-y-auto custom-scrollbar flex flex-col">
                 <div class="mb-6">
-                    <span id="modal-brand" class="text-xs uppercase tracking-wider text-stone-400 font-bold"></span>
+                    <span id="modal-brand" class="text-xs uppercase tracking-wider text-stone-400 font-bold flex items-center"></span>
                     <h2 id="modal-title" class="font-bold text-3xl text-stone-950 mt-1 mb-3 serif-font"></h2>
                     <p id="modal-desc" class="text-stone-600 leading-relaxed text-sm"></p>
                 </div>
@@ -498,6 +516,15 @@
                                 </button>
                             </div>
                             
+                            <div class="mb-4">
+                                <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Tipo de Perfume</label>
+                                <select id="new-perfume-type" class="w-full border border-stone-300 rounded px-3 py-2 text-sm focus:border-stone-900 focus:outline-none bg-white">
+                                    <option value="Diseñador">Diseñador</option>
+                                    <option value="Árabe">Árabe</option>
+                                    <option value="Nicho">Nicho</option>
+                                </select>
+                            </div>
+
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
                                 <div>
                                     <label class="text-[10px] font-bold uppercase text-stone-500 block mb-1">Notas de Salida</label>
@@ -553,199 +580,199 @@
         // --- BASE DE DATOS LOCAL INICIAL ---
         const productsDB = {
             'ariana_cloud': {
-                category: 'perfumes', gender: 'mujer', brand: 'Ariana Grande', title: 'Cloud EDP 100ml', desc: 'Un aroma dulce, cremoso y sumamente adictivo.', img: 'https://i.postimg.cc/TwsQNtrM/616q-MRx-VDt-L-AC-UF1000-1000-QL80.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Ariana Grande', title: 'Cloud EDP 100ml', desc: 'Un aroma dulce, cremoso y sumamente adictivo.', img: 'https://i.postimg.cc/TwsQNtrM/616q-MRx-VDt-L-AC-UF1000-1000-QL80.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$1,500 MXN', 'Decant 3ml': '$90 MXN', 'Decant 5ml': '$140 MXN', 'Decant 10ml': '$250 MXN' },
                 notes: [{ name: 'Dulce', icon: 'fa-candy-cane', level: '95%', color: 'bg-pink-400' }, { name: 'Lactónico', icon: 'fa-glass-water', level: '80%', color: 'bg-stone-200' }, { name: 'Vainilla', icon: 'fa-ice-cream', level: '70%', color: 'bg-yellow-200' }],
                 detailedNotes: { top: 'Lavanda, Pera, Bergamota', heart: 'Crema batida, Praliné, Coco, Orquídea', base: 'Almizcle, Notas amaderadas' }
             },
             'ariana_thankyounext': {
-                category: 'perfumes', gender: 'mujer', brand: 'Ariana Grande', title: 'Thank U Next EDP 3.4oz', desc: 'Dulce y atrevida. Juvenil y muy llamativa.', img: 'https://i.postimg.cc/PxVFsXn3/418c1f46-02d2-4940-b3a0-3dc59b0371c2-1bb356bbeae54584fc31d4d93b68cd2a.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Ariana Grande', title: 'Thank U Next EDP 3.4oz', desc: 'Dulce y atrevida. Juvenil y muy llamativa.', img: 'https://i.postimg.cc/PxVFsXn3/418c1f46-02d2-4940-b3a0-3dc59b0371c2-1bb356bbeae54584fc31d4d93b68cd2a.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$1,310 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$130 MXN', 'Decant 10ml': '$220 MXN' },
                 notes: [{ name: 'Dulce', icon: 'fa-candy-cane', level: '90%', color: 'bg-pink-400' }, { name: 'Coco', icon: 'fa-tree', level: '85%', color: 'bg-stone-300' }, { name: 'Afrutado', icon: 'fa-apple-whole', level: '70%', color: 'bg-red-400' }],
                 detailedNotes: { top: 'Frambuesa, Pera blanca', heart: 'Coco, Rosa rosada', base: 'Macarrones dulces, Almizcle' }
             },
             'dg_lightblue_women': {
-                category: 'perfumes', gender: 'mujer', brand: 'Dolce & Gabbana', title: 'Light Blue EDT 3.4oz', desc: 'La esencia del verano. Impecable y limpia.', img: 'https://i.postimg.cc/ZK6t3NSc/61g72Ytj-Tk-L-AC-UF1000-1000-QL80.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Dolce & Gabbana', title: 'Light Blue EDT 3.4oz', desc: 'La esencia del verano. Impecable y limpia.', img: 'https://i.postimg.cc/ZK6t3NSc/61g72Ytj-Tk-L-AC-UF1000-1000-QL80.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$1,360 MXN', 'Decant 3ml': '$85 MXN', 'Decant 5ml': '$135 MXN', 'Decant 10ml': '$230 MXN' },
                 notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '95%', color: 'bg-yellow-400' }, { name: 'Fresco', icon: 'fa-droplet', level: '80%', color: 'bg-blue-300' }, { name: 'Amaderado', icon: 'fa-tree', level: '65%', color: 'bg-amber-700' }],
                 detailedNotes: { top: 'Limón Siciliano, Manzana, Cedro, Campanilla', heart: 'Bambú, Jazmín, Rosa blanca', base: 'Cedro, Almizcle, Ámbar' }
             },
             'lattafa_eclaire': {
-                category: 'perfumes', gender: 'mujer', brand: 'Lattafa', title: 'Eclaire EDP 3.4oz', desc: 'Un postre embotellado. Totalmente gourmand y seductor.', img: 'https://i.postimg.cc/C1R9KB7G/images.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Lattafa', title: 'Eclaire EDP 3.4oz', desc: 'Un postre embotellado. Totalmente gourmand y seductor.', img: 'https://i.postimg.cc/C1R9KB7G/images.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$980 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$110 MXN', 'Decant 10ml': '$190 MXN' },
                 notes: [{ name: 'Caramelo', icon: 'fa-cookie', level: '95%', color: 'bg-orange-400' }, { name: 'Lactónico', icon: 'fa-glass-water', level: '85%', color: 'bg-stone-200' }, { name: 'Vainilla', icon: 'fa-ice-cream', level: '80%', color: 'bg-yellow-200' }],
                 detailedNotes: { top: 'Caramelo, Leche, Azúcar', heart: 'Flores blancas, Miel', base: 'Vainilla, Praliné, Almizcle' }
             },
             'coach_love': {
-                category: 'perfumes', gender: 'mujer', brand: 'Coach', title: 'Love EDP 90ml', desc: 'Romántica y juguetona. Fresa salvaje brillante y corazón de rosa roja.', img: 'https://i.postimg.cc/m2HpJWps/997569999-0000-003.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Coach', title: 'Love EDP 90ml', desc: 'Romántica y juguetona. Fresa salvaje brillante y corazón de rosa roja.', img: 'https://i.postimg.cc/m2HpJWps/997569999-0000-003.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$1,390 MXN', 'Decant 3ml': '$90 MXN', 'Decant 5ml': '$140 MXN', 'Decant 10ml': '$240 MXN' },
                 notes: [{ name: 'Afrutado', icon: 'fa-apple-whole', level: '90%', color: 'bg-red-500' }, { name: 'Rosas', icon: 'fa-seedling', level: '80%', color: 'bg-rose-500' }, { name: 'Dulce', icon: 'fa-candy-cane', level: '65%', color: 'bg-pink-300' }],
                 detailedNotes: { top: 'Fresa salvaje, Mandarina', heart: 'Rosa roja, Jazmín Sambac', base: 'Madera de Cedro, Ámbar' }
             },
             'sabrina_sweet_tooth': {
-                category: 'perfumes', gender: 'mujer', brand: 'Sabrina Carpenter', title: 'Sweet Tooth Caramel Dream 75ml', desc: 'Caramelo oscuro, trozos de chocolate, pachulí y un toque cremoso.', img: 'https://i.postimg.cc/3R0bhMrZ/imagesa.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Sabrina Carpenter', title: 'Sweet Tooth Caramel Dream 75ml', desc: 'Caramelo oscuro, trozos de chocolate, pachulí y un toque cremoso.', img: 'https://i.postimg.cc/3R0bhMrZ/imagesa.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$1,700 MXN', 'Decant 3ml': '$110 MXN', 'Decant 5ml': '$180 MXN', 'Decant 10ml': '$290 MXN' },
                 notes: [{ name: 'Chocolate', icon: 'fa-cookie', level: '95%', color: 'bg-amber-900' }, { name: 'Caramelo', icon: 'fa-cubes', level: '85%', color: 'bg-amber-600' }, { name: 'Dulce', icon: 'fa-candy-cane', level: '75%', color: 'bg-pink-400' }],
                 detailedNotes: { top: 'Azúcar moreno, Leche de almendras', heart: 'Chocolate oscuro, Caramelo fundido', base: 'Pachulí, Vainilla, Almizcle' }
             },
             'afnan_9am_femme': {
-                category: 'perfumes', gender: 'mujer', brand: 'Afnan', title: '9AM Pour Femme EDP 3.4oz', desc: 'Elegante, fresca e ideal para el día. Combina notas cítricas de mandarina.', img: 'https://i.postimg.cc/P5Bw70cd/9-AM-AFNAN-FEMME-AD-800x.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Afnan', title: '9AM Pour Femme EDP 3.4oz', desc: 'Elegante, fresca e ideal para el día. Combina notas cítricas de mandarina.', img: 'https://i.postimg.cc/P5Bw70cd/9-AM-AFNAN-FEMME-AD-800x.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$950 MXN', 'Decant 3ml': '$65 MXN', 'Decant 5ml': '$100 MXN', 'Decant 10ml': '$180 MXN' },
                 notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-300' }, { name: 'Floral Blanco', icon: 'fa-seedling', level: '80%', color: 'bg-stone-100' }, { name: 'Fresco', icon: 'fa-wind', level: '70%', color: 'bg-blue-200' }],
                 detailedNotes: { top: 'Mandarina, Pomelo, Cardamomo', heart: 'Flor de Azahar, Jazmín, Lavanda', base: 'Almizcle, Ámbar, Notas amaderadas' }
             },
             'lattafa_yara': {
-                category: 'perfumes', gender: 'mujer', brand: 'Lattafa', title: 'Yara EDP 3.4oz', desc: 'Famosa por su perfil aterciopelado. Batido cremoso de frutas tropicales.', img: 'https://i.postimg.cc/nVDcRCx9/71YGd6tv-XUL-AC-UF350-350-QL80.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Lattafa', title: 'Yara EDP 3.4oz', desc: 'Famosa por su perfil aterciopelado. Batido cremoso de frutas tropicales.', img: 'https://i.postimg.cc/nVDcRCx9/71YGd6tv-XUL-AC-UF350-350-QL80.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$930 MXN', 'Decant 3ml': '$65 MXN', 'Decant 5ml': '$100 MXN', 'Decant 10ml': '$170 MXN' },
                 notes: [{ name: 'Dulce', icon: 'fa-candy-cane', level: '90%', color: 'bg-pink-400' }, { name: 'Tropical', icon: 'fa-umbrella-beach', level: '85%', color: 'bg-orange-300' }, { name: 'Vainilla', icon: 'fa-ice-cream', level: '80%', color: 'bg-yellow-200' }],
                 detailedNotes: { top: 'Orquídea, Heliotropo, Naranja', heart: 'Gourmand, Frutas tropicales', base: 'Vainilla, Almizcle, Sándalo' }
             },
             'armaf_cdn_women': {
-                category: 'perfumes', gender: 'mujer', brand: 'Armaf', title: 'Club De Nuit EDP 3.6oz', desc: 'Sofisticación pura. Rosa, cítricos vibrantes y pachulí terroso.', img: 'https://i.postimg.cc/XYwjVhJt/71ymzl-pxgl-sl1500-high.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Armaf', title: 'Club De Nuit EDP 3.6oz', desc: 'Sofisticación pura. Rosa, cítricos vibrantes y pachulí terroso.', img: 'https://i.postimg.cc/XYwjVhJt/71ymzl-pxgl-sl1500-high.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$960 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$110 MXN', 'Decant 10ml': '$185 MXN' },
                 notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-400' }, { name: 'Pachulí', icon: 'fa-leaf', level: '80%', color: 'bg-green-700' }, { name: 'Rosa', icon: 'fa-seedling', level: '70%', color: 'bg-rose-400' }],
                 detailedNotes: { top: 'Naranja, Pomelo, Bergamota, Melocotón', heart: 'Rosa, Jazmín, Geranio, Lichi', base: 'Pachulí, Vainilla, Almizcle, Vetiver' }
             },
             'ch_212_vip_women': {
-                category: 'perfumes', gender: 'mujer', brand: 'Carolina Herrera', title: '212 VIP EDP 2.7oz', desc: 'La reina de la noche. Cocktail embriagador de ron, maracuyá exótica.', img: 'https://i.postimg.cc/V65PbHfy/51VREMh11v-L-AC-UF1000-1000-QL80.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Carolina Herrera', title: '212 VIP EDP 2.7oz', desc: 'La reina de la noche. Cocktail embriagador de ron, maracuyá exótica.', img: 'https://i.postimg.cc/V65PbHfy/51VREMh11v-L-AC-UF1000-1000-QL80.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$1,650 MXN', 'Decant 3ml': '$110 MXN', 'Decant 5ml': '$170 MXN', 'Decant 10ml': '$280 MXN' },
                 notes: [{ name: 'Ron / Licor', icon: 'fa-martini-glass-empty', level: '90%', color: 'bg-amber-500' }, { name: 'Vainilla', icon: 'fa-ice-cream', level: '85%', color: 'bg-yellow-200' }, { name: 'Tropical', icon: 'fa-umbrella-beach', level: '75%', color: 'bg-orange-400' }],
                 detailedNotes: { top: 'Ron, Maracuyá', heart: 'Almizcle, Gardenia', base: 'Vainilla, Haba Tonka' }
             },
             'bharara_rome_paradox': {
-                category: 'perfumes', gender: 'mujer', brand: 'Bharara', title: 'Rome Paradox EDP 100ml', desc: 'Fresca y deslumbrante. Cítricos luminosos envueltos en flores blancas.', img: 'https://i.postimg.cc/rF4cJbSm/536cadae-7c75-4d5c-998f-0d01ffc84df9-f6789e01668a8d7a6bb524d3f5075111.webp', isPerfume: true,
+                category: 'perfumes', gender: 'mujer', brand: 'Bharara', title: 'Rome Paradox EDP 100ml', desc: 'Fresca y deslumbrante. Cítricos luminosos envueltos en flores blancas.', img: 'https://i.postimg.cc/rF4cJbSm/536cadae-7c75-4d5c-998f-0d01ffc84df9-f6789e01668a8d7a6bb524d3f5075111.webp', isPerfume: true, perfumeType: 'Nicho',
                 prices: { 'Botella Completa': '$1,150 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$120 MXN', 'Decant 10ml': '$210 MXN' },
                 notes: [{ name: 'Floral', icon: 'fa-seedling', level: '85%', color: 'bg-pink-300' }, { name: 'Cítrico', icon: 'fa-lemon', level: '75%', color: 'bg-yellow-300' }, { name: 'Amaderado', icon: 'fa-tree', level: '65%', color: 'bg-stone-500' }],
                 detailedNotes: { top: 'Pera, Tangerina, Bergamota', heart: 'Jazmín, Azahar', base: 'Ámbar, Almizcle blanco, Vainilla' }
             },
             'vulcan_feu': {
-                category: 'perfumes', gender: 'todos', brand: 'French Avenue', title: 'Vulcan Feu EDP 3.4oz', desc: 'Una experiencia audaz y candente. Mezcla maderas nobles y especias cálidas.', img: 'https://i.postimg.cc/Njftc03r/imagessds.webp', isPerfume: true,
+                category: 'perfumes', gender: 'todos', brand: 'French Avenue', title: 'Vulcan Feu EDP 3.4oz', desc: 'Una experiencia audaz y candente. Mezcla maderas nobles y especias cálidas.', img: 'https://i.postimg.cc/Njftc03r/imagessds.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,120 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$115 MXN', 'Decant 10ml': '$195 MXN' },
                 notes: [{ name: 'Especiado Cálido', icon: 'fa-fire', level: '90%', color: 'bg-red-600' }, { name: 'Amaderado', icon: 'fa-tree', level: '80%', color: 'bg-amber-800' }, { name: 'Ámbar', icon: 'fa-gem', level: '75%', color: 'bg-yellow-600' }],
                 detailedNotes: { top: 'Azafrán, Pimienta rosa', heart: 'Madera de Agar, Pachulí', base: 'Ámbar, Vainilla, Cuero' }
             },
             'vulcan_baie': {
-                category: 'perfumes', gender: 'todos', brand: 'French Avenue', title: 'Vulcan Baie EDP 3.4oz', desc: 'Luminoso y revitalizante. Cítricos chispeantes con maderas limpias.', img: 'https://i.postimg.cc/gk49NWxc/imagessas.webp', isPerfume: true,
+                category: 'perfumes', gender: 'todos', brand: 'French Avenue', title: 'Vulcan Baie EDP 3.4oz', desc: 'Luminoso y revitalizante. Cítricos chispeantes con maderas limpias.', img: 'https://i.postimg.cc/gk49NWxc/imagessas.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,050 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$110 MXN', 'Decant 10ml': '$185 MXN' },
                 notes: [{ name: 'Aromático', icon: 'fa-leaf', level: '85%', color: 'bg-green-500' }, { name: 'Fresco', icon: 'fa-wind', level: '80%', color: 'bg-blue-300' }, { name: 'Amaderado', icon: 'fa-tree', level: '70%', color: 'bg-stone-700' }],
                 detailedNotes: { top: 'Bergamota, Mandarina, Limón', heart: 'Bayas de Enebro, Té verde', base: 'Cedro, Sándalo, Almizcle' }
             },
             'afnan_supremacy_collector': {
-                category: 'perfumes', gender: 'todos', brand: 'Afnan', title: 'Supremacy Collector\'s EDP 3.4oz', desc: 'Edición especial opulenta. Densa apertura de piña sobre base dulce.', img: 'https://i.postimg.cc/nrkWR4ht/Afnan-Supremacy-Collector-s-Edition-EDP-1.webp', isPerfume: true,
+                category: 'perfumes', gender: 'todos', brand: 'Afnan', title: 'Supremacy Collector\'s EDP 3.4oz', desc: 'Edición especial opulenta. Densa apertura de piña sobre base dulce.', img: 'https://i.postimg.cc/nrkWR4ht/Afnan-Supremacy-Collector-s-Edition-EDP-1.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,260 MXN', 'Decant 3ml': '$85 MXN', 'Decant 5ml': '$135 MXN', 'Decant 10ml': '$225 MXN' },
                 notes: [{ name: 'Afrutado (Piña)', icon: 'fa-apple-whole', level: '90%', color: 'bg-yellow-600' }, { name: 'Ahumado', icon: 'fa-fire', level: '85%', color: 'bg-stone-600' }, { name: 'Cuero', icon: 'fa-suitcase', level: '70%', color: 'bg-stone-900' }],
                 detailedNotes: { top: 'Piña, Manzana, Bergamota, Grosella negra', heart: 'Abedul, Rosa, Jazmín', base: 'Musgo de roble, Ámbar gris, Vainilla, Cuero' }
             },
             'lattafa_art_of_universe': {
-                category: 'perfumes', gender: 'todos', brand: 'Lattafa Pride', title: 'Art Of Universe EDP 3.4oz', desc: 'Misterio oriental unisex. Madera de Oud limpia, rosa oscura y ámbar.', img: 'https://i.postimg.cc/KcNsy5xB/7b19c168e211eef0d967fd53d5d2a2ea8b84d65268ea6580906681793db20d9c3335391988.webp', isPerfume: true,
+                category: 'perfumes', gender: 'todos', brand: 'Lattafa Pride', title: 'Art Of Universe EDP 3.4oz', desc: 'Misterio oriental unisex. Madera de Oud limpia, rosa oscura y ámbar.', img: 'https://i.postimg.cc/KcNsy5xB/7b19c168e211eef0d967fd53d5d2a2ea8b84d65268ea6580906681793db20d9c3335391988.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,120 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$120 MXN', 'Decant 10ml': '$200 MXN' },
                 notes: [{ name: 'Oud / Madera', icon: 'fa-tree', level: '90%', color: 'bg-stone-900' }, { name: 'Rosa', icon: 'fa-seedling', level: '80%', color: 'bg-rose-600' }, { name: 'Ámbar', icon: 'fa-gem', level: '75%', color: 'bg-amber-600' }],
                 detailedNotes: { top: 'Azafrán, Nuez moscada', heart: 'Rosa turca, Oud suave', base: 'Ámbar, Sándalo, Almizcle oscuro' }
             },
             'ysl_myslf': {
-                category: 'perfumes', gender: 'hombre', brand: 'Yves Saint Laurent', title: 'MYSLF EDP 3.4oz', desc: 'Una declaración de masculinidad moderna. Frescor de bergamota.', img: 'https://i.postimg.cc/QtqShXGp/myself-yves-saint-laurent-eau-de-parfum-ferfi-parfum-3.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Yves Saint Laurent', title: 'MYSLF EDP 3.4oz', desc: 'Una declaración de masculinidad moderna. Frescor de bergamota.', img: 'https://i.postimg.cc/QtqShXGp/myself-yves-saint-laurent-eau-de-parfum-ferfi-parfum-3.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$2,600 MXN', 'Decant 3ml': '$150 MXN', 'Decant 5ml': '$240 MXN', 'Decant 10ml': '$420 MXN' },
                 notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-400' }, { name: 'Floral Blanco', icon: 'fa-seedling', level: '70%', color: 'bg-stone-300' }, { name: 'Amaderado', icon: 'fa-tree', level: '60%', color: 'bg-stone-800' }],
                 detailedNotes: { top: 'Bergamota de Calabria', heart: 'Flor de Azahar del naranjo', base: 'Ambrofix, Pachulí' }
             },
             'armaf_precieux': {
-                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Club de Nuit Precieux 1 Extrait', desc: 'Opulencia absoluta. Apertura frutal de piña con maderas y cuero ahumado.', img: 'https://i.postimg.cc/YCfvXj1K/imagessss.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Club de Nuit Precieux 1 Extrait', desc: 'Opulencia absoluta. Apertura frutal de piña con maderas y cuero ahumado.', img: 'https://i.postimg.cc/YCfvXj1K/imagessss.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,500 MXN', 'Decant 3ml': '$90 MXN', 'Decant 5ml': '$150 MXN', 'Decant 10ml': '$260 MXN' },
                 notes: [{ name: 'Afrutado', icon: 'fa-apple-whole', level: '90%', color: 'bg-red-400' }, { name: 'Ahumado', icon: 'fa-fire', level: '80%', color: 'bg-stone-600' }, { name: 'Cuero', icon: 'fa-suitcase', level: '70%', color: 'bg-stone-900' }],
                 detailedNotes: { top: 'Piña, Pera, Bergamota', heart: 'Madera blanca, Jazmín', base: 'Musgo, Cuero, Pachulí' }
             },
             'bharara_rome_melancholia': {
-                category: 'perfumes', gender: 'hombre', brand: 'Bharara', title: 'Rome Melancholia EDP 3.4oz', desc: 'Cítricos chispeantes con un corazón aromático y maderas oscuras.', img: 'https://i.postimg.cc/0NVCb920/images.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Bharara', title: 'Rome Melancholia EDP 3.4oz', desc: 'Cítricos chispeantes con un corazón aromático y maderas oscuras.', img: 'https://i.postimg.cc/0NVCb920/images.webp', isPerfume: true, perfumeType: 'Nicho',
                 prices: { 'Botella Completa': '$1,250 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$130 MXN', 'Decant 10ml': '$220 MXN' },
                 notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-500' }, { name: 'Especiado Fresco', icon: 'fa-leaf', level: '80%', color: 'bg-green-600' }, { name: 'Amaderado', icon: 'fa-tree', level: '75%', color: 'bg-stone-800' }],
                 detailedNotes: { top: 'Cítricos italianos, Lavanda', heart: 'Romero, Cardamomo', base: 'Vetiver, Ámbar' }
             },
             'afnan_turathi_electric': {
-                category: 'perfumes', gender: 'hombre', brand: 'Afnan', title: 'Turathi Electric EDP 3.0oz', desc: 'Vibrante y muy versátil. Notas cítricas de toronja potentes y maderas limpias.', img: 'https://i.postimg.cc/qBPxtb4R/turathielectric-a4-800x.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Afnan', title: 'Turathi Electric EDP 3.0oz', desc: 'Vibrante y muy versátil. Notas cítricas de toronja potentes y maderas limpias.', img: 'https://i.postimg.cc/qBPxtb4R/turathielectric-a4-800x.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,120 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$120 MXN', 'Decant 10ml': '$200 MXN' },
                 notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '95%', color: 'bg-yellow-400' }, { name: 'Almizclado', icon: 'fa-wind', level: '80%', color: 'bg-stone-200' }, { name: 'Fresco Especiado', icon: 'fa-leaf', level: '70%', color: 'bg-blue-300' }],
                 detailedNotes: { top: 'Toronja rosada, Limón', heart: 'Jengibre, Notas acuáticas', base: 'Almizcle, Ámbar gris' }
             },
             'armaf_iconic': {
-                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Club De Nuit Blue Iconic EDP', desc: 'Elegancia azul para toda ocasión. Pomelo, menta, jengibre y maderas.', img: 'https://i.postimg.cc/htSxxNYp/7.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Club De Nuit Blue Iconic EDP', desc: 'Elegancia azul para toda ocasión. Pomelo, menta, jengibre y maderas.', img: 'https://i.postimg.cc/htSxxNYp/7.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,090 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$115 MXN', 'Decant 10ml': '$195 MXN' },
                 notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '90%', color: 'bg-yellow-500' }, { name: 'Especiado Fresco', icon: 'fa-leaf', level: '80%', color: 'bg-green-400' }, { name: 'Incienso', icon: 'fa-fire', level: '70%', color: 'bg-stone-500' }],
                 detailedNotes: { top: 'Pomelo, Menta', heart: 'Jengibre, Nuez moscada', base: 'Incienso, Sándalo' }
             },
             'armaf_iconic_extrait': {
-                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Club De Nuit Iconic Extrait', desc: 'La versión más concentrada y densa. Mayor proyección y ámbar extremo.', img: 'https://i.postimg.cc/52R00GWg/bbf899dad54a4250a0d7889a9ffaa5c8-tplv-fhlh96nyum-crop-webp-1024-1024.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Club De Nuit Iconic Extrait', desc: 'La versión más concentrada y densa. Mayor proyección y ámbar extremo.', img: 'https://i.postimg.cc/52R00GWg/bbf899dad54a4250a0d7889a9ffaa5c8-tplv-fhlh96nyum-crop-webp-1024-1024.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,130 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$120 MXN', 'Decant 10ml': '$200 MXN' },
                 notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-600' }, { name: 'Ámbar', icon: 'fa-gem', level: '85%', color: 'bg-amber-600' }, { name: 'Amaderado', icon: 'fa-tree', level: '75%', color: 'bg-stone-800' }],
                 detailedNotes: { top: 'Pomelo intenso, Limón', heart: 'Nuez moscada, Jazmín', base: 'Ámbar extremo, Incienso denso' }
             },
             'bharara_rome_homme': {
-                category: 'perfumes', gender: 'hombre', brand: 'Bharara', title: 'Rome Pour Homme EDP 3.4oz', desc: 'Salida cítrica y afrutada que se asienta en un fondo de ámbar dulce.', img: 'https://i.postimg.cc/t4wqyxF2/A011CFB4-5319-4CBC-A0BF-995898AD2767.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Bharara', title: 'Rome Pour Homme EDP 3.4oz', desc: 'Salida cítrica y afrutada que se asienta en un fondo de ámbar dulce.', img: 'https://i.postimg.cc/t4wqyxF2/A011CFB4-5319-4CBC-A0BF-995898AD2767.webp', isPerfume: true, perfumeType: 'Nicho',
                 prices: { 'Botella Completa': '$1,000 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$110 MXN', 'Decant 10ml': '$185 MXN' },
                 notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-400' }, { name: 'Afrutado', icon: 'fa-apple-whole', level: '80%', color: 'bg-red-400' }, { name: 'Ámbar', icon: 'fa-gem', level: '70%', color: 'bg-amber-600' }],
                 detailedNotes: { top: 'Cítricos soleados, Piña', heart: 'Pimienta, Lavanda', base: 'Ámbar, Almizcle, Vainilla' }
             },
             'armaf_odyssey_aqua': {
-                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Odyssey Aqua EDP 3.4oz', desc: 'Notas marinas saladas mezcladas con toques dulces y aromáticos.', img: 'https://i.postimg.cc/wMvZ7Wpf/s-l225.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Odyssey Aqua EDP 3.4oz', desc: 'Notas marinas saladas mezcladas con toques dulces y aromáticos.', img: 'https://i.postimg.cc/wMvZ7Wpf/s-l225.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,000 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$110 MXN', 'Decant 10ml': '$185 MXN' },
                 notes: [{ name: 'Acuático', icon: 'fa-water', level: '95%', color: 'bg-blue-400' }, { name: 'Dulce', icon: 'fa-candy-cane', level: '75%', color: 'bg-pink-300' }, { name: 'Aromático', icon: 'fa-leaf', level: '70%', color: 'bg-green-400' }],
                 detailedNotes: { top: 'Pomelo, Notas marinas', heart: 'Pimienta negra, Violeta', base: 'Madera de Guaiac, Ámbar gris' }
             },
             'fw_liquid_brun': {
-                category: 'perfumes', gender: 'hombre', brand: 'Fragrance World', title: 'Liquid Brun EDP 3.4oz', desc: 'Vainilla, canela y praliné sobre maderas. El imán de cumplidos.', img: 'https://i.postimg.cc/hjC3W9dz/liquid-brun-a-800x.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Fragrance World', title: 'Liquid Brun EDP 3.4oz', desc: 'Vainilla, canela y praliné sobre maderas. El imán de cumplidos.', img: 'https://i.postimg.cc/hjC3W9dz/liquid-brun-a-800x.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,150 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$120 MXN', 'Decant 10ml': '$200 MXN' },
                 notes: [{ name: 'Vainilla', icon: 'fa-ice-cream', level: '90%', color: 'bg-yellow-200' }, { name: 'Especiado Cálido', icon: 'fa-fire', level: '85%', color: 'bg-red-700' }, { name: 'Dulce', icon: 'fa-candy-cane', level: '75%', color: 'bg-pink-300' }],
                 detailedNotes: { top: 'Canela, Cardamomo', heart: 'Vainilla bourbon, Praliné', base: 'Almizcle, Maderas cálidas' }
             },
             'adg_profondo_parfum': {
-                category: 'perfumes', gender: 'hombre', brand: 'Giorgio Armani', title: 'Acqua Di Gio Profondo Parfum', desc: 'Notas marinas ultra intensas, minerales, pachulí y cítricos.', img: 'https://i.postimg.cc/SQHbnhnp/1159722038-2p.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Giorgio Armani', title: 'Acqua Di Gio Profondo Parfum', desc: 'Notas marinas ultra intensas, minerales, pachulí y cítricos.', img: 'https://i.postimg.cc/SQHbnhnp/1159722038-2p.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$2,350 MXN', 'Decant 3ml': '$140 MXN', 'Decant 5ml': '$220 MXN', 'Decant 10ml': '$380 MXN' },
                 notes: [{ name: 'Marino', icon: 'fa-water', level: '95%', color: 'bg-blue-600' }, { name: 'Aromático', icon: 'fa-leaf', level: '80%', color: 'bg-green-500' }, { name: 'Cítrico', icon: 'fa-lemon', level: '75%', color: 'bg-yellow-400' }],
                 detailedNotes: { top: 'Notas Marinas, Aquozone', heart: 'Romero, Ciprés', base: 'Pachulí de Guatemala, Incienso' }
             },
             'issey_miyake_homme': {
-                category: 'perfumes', gender: 'hombre', brand: 'Issey Miyake', title: 'L\'eau D\'Issey Pour Homme', desc: 'Clásico atemporal. Yuzu, toques de loto y secado amaderado de vetiver.', img: 'https://i.postimg.cc/XNGTSzs6/Leau-Dissey-Pour-Homme-Issey-Miyake-125ml-EDT.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Issey Miyake', title: 'L\'eau D\'Issey Pour Homme', desc: 'Clásico atemporal. Yuzu, toques de loto y secado amaderado de vetiver.', img: 'https://i.postimg.cc/XNGTSzs6/Leau-Dissey-Pour-Homme-Issey-Miyake-125ml-EDT.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$1,090 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$115 MXN', 'Decant 10ml': '$195 MXN' },
                 notes: [{ name: 'Cítrico (Yuzu)', icon: 'fa-lemon', level: '90%', color: 'bg-yellow-300' }, { name: 'Fresco Floral', icon: 'fa-seedling', level: '80%', color: 'bg-stone-200' }, { name: 'Amaderado', icon: 'fa-tree', level: '70%', color: 'bg-stone-500' }],
                 detailedNotes: { top: 'Yuzu, Ciprés, Mandarina', heart: 'Nuez moscada, Loto azul', base: 'Vetiver, Almizcle, Cedro' }
             },
             'lattafa_vintage_radio': {
-                category: 'perfumes', gender: 'hombre', brand: 'Lattafa Pride', title: 'Vintage Radio EDP 3.4oz', desc: 'Ciruela jugosa, madera de palo santo calmante y lavanda.', img: 'https://i.postimg.cc/k5GTN2Zm/lattafa-vintage-radio-a-800x.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Lattafa Pride', title: 'Vintage Radio EDP 3.4oz', desc: 'Ciruela jugosa, madera de palo santo calmante y lavanda.', img: 'https://i.postimg.cc/k5GTN2Zm/lattafa-vintage-radio-a-800x.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$940 MXN', 'Decant 3ml': '$65 MXN', 'Decant 5ml': '$105 MXN', 'Decant 10ml': '$180 MXN' },
                 notes: [{ name: 'Afrutado (Ciruela)', icon: 'fa-apple-whole', level: '85%', color: 'bg-purple-600' }, { name: 'Amaderado', icon: 'fa-tree', level: '85%', color: 'bg-amber-700' }, { name: 'Aromático', icon: 'fa-leaf', level: '75%', color: 'bg-purple-400' }],
                 detailedNotes: { top: 'Ciruela intensa, Lavanda', heart: 'Palo Santo, Pimienta', base: 'Sándalo, Vainilla cálida' }
             },
             'rasasi_hawas_ice': {
-                category: 'perfumes', gender: 'hombre', brand: 'Rasasi', title: 'Hawas Ice EDP 3.4oz', desc: 'Salida gélida de menta, manzana verde y limón dulce. Proyección nuclear.', img: 'https://i.postimg.cc/3xcXTnLP/imagsdsfdes.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Rasasi', title: 'Hawas Ice EDP 3.4oz', desc: 'Salida gélida de menta, manzana verde y limón dulce. Proyección nuclear.', img: 'https://i.postimg.cc/3xcXTnLP/imagsdsfdes.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,220 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$130 MXN', 'Decant 10ml': '$220 MXN' },
                 notes: [{ name: 'Fresco / Hielo', icon: 'fa-snowflake', level: '95%', color: 'bg-blue-300' }, { name: 'Afrutado', icon: 'fa-apple-whole', level: '90%', color: 'bg-green-400' }, { name: 'Dulce', icon: 'fa-candy-cane', level: '75%', color: 'bg-pink-300' }],
                 detailedNotes: { top: 'Menta, Manzana verde', heart: 'Melón, Ciruela', base: 'Almizcle gris, Sándalo' }
             },
             'rasasi_hawas_kobra': {
-                category: 'perfumes', gender: 'hombre', brand: 'Rasasi', title: 'Hawas Kobra EDP 3.4oz', desc: 'Giro oscuro al original. Cuero suave, maderas oscuras y especias.', img: 'https://i.postimg.cc/Cx3R7trM/Inspiradoen-58.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Rasasi', title: 'Hawas Kobra EDP 3.4oz', desc: 'Giro oscuro al original. Cuero suave, maderas oscuras y especias.', img: 'https://i.postimg.cc/Cx3R7trM/Inspiradoen-58.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,170 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$125 MXN', 'Decant 10ml': '$210 MXN' },
                 notes: [{ name: 'Cuero', icon: 'fa-suitcase', level: '85%', color: 'bg-stone-800' }, { name: 'Amaderado', icon: 'fa-tree', level: '80%', color: 'bg-amber-900' }, { name: 'Especiado', icon: 'fa-fire', level: '75%', color: 'bg-red-800' }],
                 detailedNotes: { top: 'Bergamota, Manzana', heart: 'Madera oscura, Cuero', base: 'Ámbar, Almizcle, Pachulí' }
             },
             'rasasi_hawas_tropical': {
-                category: 'perfumes', gender: 'hombre', brand: 'Rasasi', title: 'Hawas Tropical EDP 3.4oz', desc: 'Explosión de frutas tropicales jugosas, notas acuáticas y fondo dulce.', img: 'https://i.postimg.cc/Wz1ztPzW/haway-tropical-tropical-a-800x.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Rasasi', title: 'Hawas Tropical EDP 3.4oz', desc: 'Explosión de frutas tropicales jugosas, notas acuáticas y fondo dulce.', img: 'https://i.postimg.cc/Wz1ztPzW/haway-tropical-tropical-a-800x.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,210 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$130 MXN', 'Decant 10ml': '$215 MXN' },
                 notes: [{ name: 'Tropical', icon: 'fa-umbrella-beach', level: '95%', color: 'bg-orange-400' }, { name: 'Afrutado', icon: 'fa-apple-whole', level: '85%', color: 'bg-red-400' }, { name: 'Acuático', icon: 'fa-water', level: '75%', color: 'bg-blue-400' }],
                 detailedNotes: { top: 'Fruta de la pasión, Mango', heart: 'Notas marinas, Melón', base: 'Almizcle, Ámbar gris' }
             },
             'versace_dylan_blue': {
-                category: 'perfumes', gender: 'hombre', brand: 'Versace', title: 'Dylan Blue EDT 3.4oz', desc: 'Toronja brillante, ambroxan envolvente, pimienta negra e incienso.', img: 'https://i.postimg.cc/nLKhkLQN/versace-dylan-blue-notes-men-800x.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Versace', title: 'Dylan Blue EDT 3.4oz', desc: 'Toronja brillante, ambroxan envolvente, pimienta negra e incienso.', img: 'https://i.postimg.cc/nLKhkLQN/versace-dylan-blue-notes-men-800x.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$1,500 MXN', 'Decant 3ml': '$90 MXN', 'Decant 5ml': '$150 MXN', 'Decant 10ml': '$250 MXN' },
                 notes: [{ name: 'Ambarino/Ambroxan', icon: 'fa-gem', level: '90%', color: 'bg-blue-600' }, { name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-500' }, { name: 'Especiado Fresco', icon: 'fa-leaf', level: '75%', color: 'bg-green-700' }],
                 detailedNotes: { top: 'Bergamota, Pomelo', heart: 'Ambroxan, Pimienta negra', base: 'Incienso, Almizcle, Azafrán' }
             },
             'arabiyat_prestige_marwa': {
-                category: 'perfumes', gender: 'hombre', brand: 'Arabiyat Prestige', title: 'Marwa EDP 100ml', desc: 'Elegancia árabe moderna. Maderas ricas y dulzor ambarino de lujo.', img: 'https://i.postimg.cc/wBz67dbx/61pa-Ip-P-n-L.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Arabiyat Prestige', title: 'Marwa EDP 100ml', desc: 'Elegancia árabe moderna. Maderas ricas y dulzor ambarino de lujo.', img: 'https://i.postimg.cc/wBz67dbx/61pa-Ip-P-n-L.webp', isPerfume: true, perfumeType: 'Árabe',
                 prices: { 'Botella Completa': '$1,200 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$130 MXN', 'Decant 10ml': '$215 MXN' },
                 notes: [{ name: 'Amaderado', icon: 'fa-tree', level: '90%', color: 'bg-amber-800' }, { name: 'Especiado Cálido', icon: 'fa-fire', level: '80%', color: 'bg-red-700' }, { name: 'Ámbar', icon: 'fa-gem', level: '75%', color: 'bg-amber-600' }],
                 detailedNotes: { top: 'Pimienta rosa, Azafrán', heart: 'Sándalo, Madera de Oud', base: 'Ámbar dorado, Vainilla' }
             },
             'dg_k_men': {
-                category: 'perfumes', gender: 'hombre', brand: 'Dolce & Gabbana', title: 'K EDP 3.3oz', desc: 'Naranja sanguina, limón siciliano y bayas de enebro. Para líderes.', img: 'https://i.postimg.cc/4yDDqzDK/DOLCE-K-KING-EDP-A-800x.webp', isPerfume: true,
+                category: 'perfumes', gender: 'hombre', brand: 'Dolce & Gabbana', title: 'K EDP 3.3oz', desc: 'Naranja sanguina, limón siciliano y bayas de enebro. Para líderes.', img: 'https://i.postimg.cc/4yDDqzDK/DOLCE-K-KING-EDP-A-800x.webp', isPerfume: true, perfumeType: 'Diseñador',
                 prices: { 'Botella Completa': '$1,540 MXN', 'Decant 3ml': '$95 MXN', 'Decant 5ml': '$155 MXN', 'Decant 10ml': '$260 MXN' },
                 notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '90%', color: 'bg-orange-500' }, { name: 'Aromático', icon: 'fa-leaf', level: '80%', color: 'bg-green-600' }, { name: 'Amaderado', icon: 'fa-tree', level: '70%', color: 'bg-stone-700' }],
                 detailedNotes: { top: 'Naranja sanguina, Limón', heart: 'Pimiento, Salvia', base: 'Vetiver, Madera de cedro' }
@@ -1035,6 +1062,7 @@
             let newProd = { category, gender, brand, title, desc, img: imgBase64, isPerfume };
             
             if(isPerfume) {
+                newProd.perfumeType = document.getElementById('new-perfume-type').value;
                 newProd.prices = {
                     'Botella Completa': price,
                     'Decant 3ml': '$80 MXN',
@@ -1125,6 +1153,12 @@
             const inStock = productStock[id] !== false;
             const isNew = productNew[id] === true;
             
+            let typeBadge = '';
+            if (data.perfumeType) {
+                let badgeColor = data.perfumeType === 'Árabe' ? 'bg-amber-600' : data.perfumeType === 'Diseñador' ? 'bg-stone-800' : 'bg-purple-600';
+                typeBadge = `<span class="${badgeColor} text-white text-[9px] px-2 py-0.5 rounded ml-2 uppercase tracking-widest shadow-sm">${data.perfumeType}</span>`;
+            }
+
             return `
             <div class="product-card bg-white border border-stone-200 rounded-lg overflow-hidden flex flex-col cursor-pointer ${!inStock ? 'opacity-80' : ''}" onclick="openModal('${id}')">
                 ${!inStock ? `<div class="out-of-stock-overlay"><div class="out-of-stock-badge">Agotado</div></div>` : ''}
@@ -1134,7 +1168,7 @@
                 </div>
                 <div class="p-6 flex-grow flex flex-col justify-between">
                     <div>
-                        <span class="text-xs uppercase tracking-wider text-stone-400 font-semibold">${data.brand}</span>
+                        <span class="text-xs uppercase tracking-wider text-stone-400 font-semibold flex items-center">${data.brand} ${typeBadge}</span>
                         <h3 class="font-bold text-lg text-stone-950 mt-1">${data.title}</h3>
                         <div class="info-overlay text-sm text-stone-600">${shortDesc}</div>
                     </div>
@@ -1171,7 +1205,6 @@
             renderPerfumes(filter);
         }
 
-        // Se encarga de actualizar las tarjetas "Destacadas" en el Inicio para que sí cambien las fotos y textos
         function updateHardcodedCards() {
             document.querySelectorAll('.product-card').forEach(card => {
                 const onclickAttr = card.getAttribute('onclick');
@@ -1185,17 +1218,24 @@
                         const inStock = productStock[id] !== false;
                         const isNew = productNew[id] === true;
 
-                        // Actualizar Imagen Dinámicamente
                         const img = card.querySelector('img');
                         if(img) img.src = p.img;
                         
-                        // Actualizar Título Dinámicamente
                         const title = card.querySelector('h3');
                         if(title) title.innerText = p.title;
 
-                        // Actualizar Precio Dinámicamente
                         const price = card.querySelector('span.text-lg.font-bold');
                         if(price) price.innerText = p.prices['Botella Completa'] || p.prices['Única'];
+
+                        const brandSpan = card.querySelector('span.text-xs.uppercase');
+                        if(brandSpan) {
+                            let tBadge = '';
+                            if (p.perfumeType) {
+                                let bColor = p.perfumeType === 'Árabe' ? 'bg-amber-600' : p.perfumeType === 'Diseñador' ? 'bg-stone-800' : 'bg-purple-600';
+                                tBadge = `<span class="${bColor} text-white text-[9px] px-2 py-0.5 rounded ml-2 uppercase tracking-widest shadow-sm">${p.perfumeType}</span>`;
+                            }
+                            brandSpan.innerHTML = `${p.brand} ${tBadge}`;
+                        }
 
                         const oldOverlay = card.querySelector('.out-of-stock-overlay');
                         if(oldOverlay) oldOverlay.remove();
@@ -1233,6 +1273,12 @@
                 const inStock = productStock[id] !== false;
                 const badgeHtml = (isNew && inStock) ? `<div class="absolute top-2 right-2 bg-blue-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow z-20 uppercase tracking-widest">Nuevo</div>` : '';
 
+                let typeBadge = '';
+                if (p.perfumeType) {
+                    let badgeColor = p.perfumeType === 'Árabe' ? 'bg-amber-600' : p.perfumeType === 'Diseñador' ? 'bg-stone-800' : 'bg-purple-600';
+                    typeBadge = `<span class="${badgeColor} text-white text-[8px] px-1.5 py-0.5 rounded ml-1 uppercase tracking-widest">${p.perfumeType}</span>`;
+                }
+
                 spinner.innerHTML += `
                     <div class="carousel-3d-item flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-2" 
                          style="transform: ${transformStr};"
@@ -1243,7 +1289,7 @@
                             ${!inStock ? '<div class="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-[1px]"><span class="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase -rotate-12">Agotado</span></div>' : ''}
                         </div>
                         <div class="p-4 text-center h-2/5 flex flex-col justify-center bg-white rounded-b-[12px]">
-                            <span class="text-[10px] font-bold uppercase text-stone-400">${p.brand}</span>
+                            <span class="text-[10px] font-bold uppercase text-stone-400 flex items-center justify-center">${p.brand} ${typeBadge}</span>
                             <h4 class="text-sm font-bold text-stone-800 leading-tight mt-1 truncate">${p.title}</h4>
                         </div>
                     </div>
@@ -1277,7 +1323,6 @@
             slides[currentSlide].classList.add('active');
         }, 4000);
 
-        // --- LÓGICA DE HISTORIAS DE INSTAGRAM MULTIFOTO ---
         let storyTimeout;
         let currentStoryData = [];
         let currentStoryIndex = 0;
@@ -1368,7 +1413,13 @@
             const data = productsDB[productId];
             const inStock = productStock[productId] !== false;
             
-            document.getElementById('modal-brand').innerText = data.brand;
+            let badgeHtml = '';
+            if(data.perfumeType) {
+                let badgeColor = data.perfumeType === 'Árabe' ? 'bg-amber-600' : data.perfumeType === 'Diseñador' ? 'bg-stone-800' : 'bg-purple-600';
+                badgeHtml = `<span class="${badgeColor} text-white text-[10px] px-2 py-1 rounded ml-3 shadow-sm inline-block tracking-widest">${data.perfumeType}</span>`;
+            }
+
+            document.getElementById('modal-brand').innerHTML = data.brand + badgeHtml;
             document.getElementById('modal-title').innerText = data.title + (inStock ? '' : ' (AGOTADO)');
             document.getElementById('modal-desc').innerText = data.desc;
             document.getElementById('modal-img').src = data.img;
