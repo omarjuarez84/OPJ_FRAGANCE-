@@ -1457,16 +1457,15 @@
                 renderStorySlide(); // Reiniciar la primera si le da atrás
             }
         }
-
+        
         function closeStory() {
             document.getElementById('story-modal').classList.add('hidden');
             clearTimeout(storyTimeout);
             currentStoryData = [];
-        }
-
-        function closeStory() {
-            document.getElementById('story-modal').classList.add('hidden');
-            clearTimeout(storyTimeout);
+            currentStoryIndex = 0;
+            // Limpiar la imagen para que no parpadee al abrir otra historia
+            document.getElementById('story-img').src = "";
+            document.getElementById('story-caption').innerText = "";
         }
 
         const stars = document.querySelectorAll('#star-selector i');
