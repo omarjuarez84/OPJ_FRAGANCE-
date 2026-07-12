@@ -1395,22 +1395,73 @@
             slides[currentSlide].classList.add('active');
         }, 4000);
 
+       // --- LÓGICA DE HISTORIAS DE INSTAGRAM MULTIFOTO ---
         let storyTimeout;
-        function openStory(imgUrl, caption) {
-            document.getElementById('story-img').src = imgUrl;
-            document.getElementById('story-caption').innerText = caption;
+        let currentStoryData = [];
+        let currentStoryIndex = 0;
+
+        function openStory(storyArray) {
+            currentStoryData = storyArray;
+            currentStoryIndex = 0;
             document.getElementById('story-modal').classList.remove('hidden');
+            renderStorySlide();
+        }
+
+        function renderStorySlide() {
+            clearTimeout(storyTimeout);
+            const data = currentStoryData[currentStoryIndex];
             
-            const progress = document.getElementById('story-progress');
-            progress.style.transition = 'none';
-            progress.style.width = '0%';
+            // Cargar imagen y texto actual
+            document.getElementById('story-img').src = data.img;
+            document.getElementById('story-caption').innerText = data.text;
             
+            // Generar barras de progreso divididas
+            const progressContainer = document.getElementById('story-progress-container');
+            progressContainer.innerHTML = '';
+            for(let i = 0; i < currentStoryData.length; i++) {
+                // Si la historia ya pasó, la barra está llena. Si no, está vacía.
+                let barWidth = i < currentStoryIndex ? 'w-full' : 'w-0';
+                progressContainer.innerHTML += `
+                    <div class="h-1 bg-white/30 rounded-full overflow-hidden w-full flex-1">
+                        <div class="h-full bg-white transition-all duration-[5000ms] ease-linear ${barWidth}" id="progress-${i}"></div>
+                    </div>
+                `;
+            }
+            
+            // Animar la barra de progreso actual (5 segundos)
             setTimeout(() => {
-                progress.style.transition = 'width 5s linear';
-                progress.style.width = '100%';
+                const currentBar = document.getElementById(`progress-${currentStoryIndex}`);
+                if(currentBar) currentBar.style.width = '100%';
             }, 50);
             
-            storyTimeout = setTimeout(() => { closeStory(); }, 5000);
+            // Avanzar a la siguiente foto automáticamente a los 5 segundos
+            storyTimeout = setTimeout(() => {
+                nextStorySlide();
+            }, 5000);
+        }
+
+        function nextStorySlide() {
+            if (currentStoryIndex < currentStoryData.length - 1) {
+                currentStoryIndex++;
+                renderStorySlide();
+            } else {
+                closeStory(); // Si es la última foto, cerrar el modal
+            }
+        }
+
+        function prevStorySlide() {
+            if (currentStoryIndex > 0) {
+                currentStoryIndex--;
+                renderStorySlide();
+            } else {
+                renderStorySlide(); // Reiniciar la primera si le da atrás
+            }
+        }
+
+        function closeStory() {
+            document.getElementById('story-modal').classList.add('hidden');
+            clearTimeout(storyTimeout);
+            currentStoryData = [];
         }
 
         function closeStory() {
