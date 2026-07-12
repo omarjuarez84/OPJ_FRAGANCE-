@@ -242,7 +242,7 @@
                     </div>
                 </div>
 
-            <div id="referencias" class="bg-stone-50 py-16 border-t border-stone-200 text-center">
+          <div id="referencias" class="bg-stone-50 py-16 border-t border-stone-200 text-center">
                 <div class="max-w-7xl mx-auto px-4">
                     <div class="mb-8">
                         <h2 class="serif-font text-2xl font-bold text-stone-900">Entregas Personales</h2>
@@ -250,8 +250,13 @@
                     </div>
                     
                     <div class="flex space-x-6 overflow-x-auto pb-4 pt-2 hide-scroll snap-x justify-center w-full max-w-4xl mx-auto">
+                        
                         <div class="flex flex-col items-center cursor-pointer flex-shrink-0 snap-center hover:scale-105 transition-transform" 
-                             onclick="openStory('https://images.unsplash.com/photo-1580974582390-349f28682dc1?q=80&w=600&auto=format&fit=crop', 'Entrega a Carlos en su oficina 📦')">
+                             onclick='openStory([
+                                {"img": "https://images.unsplash.com/photo-1580974582390-349f28682dc1?q=80&w=600&auto=format&fit=crop", "text": "1. Empacando el pedido 📦"},
+                                {"img": "https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?q=80&w=600&auto=format&fit=crop", "text": "2. En camino al punto de entrega 🚗"},
+                                {"img": "https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=600&auto=format&fit=crop", "text": "3. ¡Entregado con éxito en Salamanca! ✨"}
+                             ])'>
                             <div class="w-20 h-20 md:w-24 md:h-24 rounded-full p-1 bg-gradient-to-tr from-yellow-400 via-orange-500 to-pink-500 shadow-md">
                                 <div class="w-full h-full bg-white rounded-full p-[2px]">
                                     <img src="https://images.unsplash.com/photo-1580974582390-349f28682dc1?q=80&w=200&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover rounded-full">
@@ -261,27 +266,10 @@
                         </div>
 
                         <div class="flex flex-col items-center cursor-pointer flex-shrink-0 snap-center hover:scale-105 transition-transform" 
-                             onclick="openStory('https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?q=80&w=600&auto=format&fit=crop', 'Envío listo y empacado para viajar ✈️')">
-                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full p-1 bg-gradient-to-tr from-yellow-400 via-orange-500 to-pink-500 shadow-md">
-                                <div class="w-full h-full bg-white rounded-full p-[2px]">
-                                    <img src="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?q=80&w=200&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover rounded-full">
-                                </div>
-                            </div>
-                            <span class="text-xs font-bold text-stone-700 mt-2 text-center w-20 truncate">Envíos</span>
-                        </div>
-
-                        <div class="flex flex-col items-center cursor-pointer flex-shrink-0 snap-center hover:scale-105 transition-transform" 
-                             onclick="openStory('https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=600&auto=format&fit=crop', 'Otra entrega exitosa del día ✨')">
-                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full p-1 bg-gradient-to-tr from-yellow-400 via-orange-500 to-pink-500 shadow-md">
-                                <div class="w-full h-full bg-white rounded-full p-[2px]">
-                                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=200&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover rounded-full">
-                                </div>
-                            </div>
-                            <span class="text-xs font-bold text-stone-700 mt-2 text-center w-20 truncate">Centro</span>
-                        </div>
-
-                        <div class="flex flex-col items-center cursor-pointer flex-shrink-0 snap-center hover:scale-105 transition-transform" 
-                             onclick="openStory('https://images.unsplash.com/photo-1574634534894-89d7576c8259?q=80&w=600&auto=format&fit=crop', 'Punto de encuentro. ¡Gracias por la compra! 🤝')">
+                             onclick='openStory([
+                                {"img": "https://images.unsplash.com/photo-1574634534894-89d7576c8259?q=80&w=600&auto=format&fit=crop", "text": "Gorra lista para entregar 🔥"},
+                                {"img": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=600&auto=format&fit=crop", "text": "Cliente satisfecho en Plaza 🤝"}
+                             ])'>
                             <div class="w-20 h-20 md:w-24 md:h-24 rounded-full p-1 bg-gradient-to-tr from-yellow-400 via-orange-500 to-pink-500 shadow-md">
                                 <div class="w-full h-full bg-white rounded-full p-[2px]">
                                     <img src="https://images.unsplash.com/photo-1574634534894-89d7576c8259?q=80&w=200&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover rounded-full">
@@ -289,9 +277,61 @@
                             </div>
                             <span class="text-xs font-bold text-stone-700 mt-2 text-center w-20 truncate">Plaza</span>
                         </div>
+
                     </div>
                 </div>
             </div>
+
+            <div id="resenas" class="py-16 text-left">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="text-center mb-12">
+                        <h2 class="serif-font text-3xl font-bold text-stone-900">Lo que dicen nuestros clientes</h2>
+                        <div class="w-16 h-1 bg-stone-900 mx-auto mt-4"></div>
+                    </div>
+                    
+                    <div class="flex flex-col lg:flex-row gap-12">
+                        <div class="lg:w-1/3 bg-white border border-stone-200 rounded-xl p-6 shadow-lg h-fit">
+                            <h3 class="font-bold text-lg mb-4 text-stone-800">Deja tu reseña</h3>
+                            <form id="review-form" class="space-y-4">
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Nombre</label>
+                                    <input type="text" id="rev-name" required class="w-full border border-stone-300 rounded px-3 py-2 focus:outline-none focus:border-stone-900 text-sm">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Calificación</label>
+                                    <div class="star-rating text-stone-300 text-xl flex gap-1" id="star-selector">
+                                        <i class="fas fa-star" data-val="1"></i>
+                                        <i class="fas fa-star" data-val="2"></i>
+                                        <i class="fas fa-star" data-val="3"></i>
+                                        <i class="fas fa-star" data-val="4"></i>
+                                        <i class="fas fa-star" data-val="5"></i>
+                                    </div>
+                                    <input type="hidden" id="rev-stars" value="0">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Foto del producto (Opcional)</label>
+                                    <input type="file" id="rev-image" accept="image/*" class="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-stone-100 file:text-stone-700 hover:file:bg-stone-200 cursor-pointer">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Comentario</label>
+                                    <textarea id="rev-text" required rows="3" class="w-full border border-stone-300 rounded px-3 py-2 focus:outline-none focus:border-stone-900 text-sm resize-none"></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-stone-900 text-white font-bold uppercase text-sm py-3 rounded hover:bg-stone-800 transition shadow">Publicar Reseña</button>
+                            </form>
+                        </div>
+
+                        <div class="lg:w-2/3">
+                            <div id="reviews-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="text-center text-stone-400 col-span-full py-10">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-3"></i>
+                                    <p>Cargando reseñas reales...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
             <div id="resenas" class="py-16 text-left">
                 <div class="max-w-7xl mx-auto px-4">
