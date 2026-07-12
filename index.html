@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OPJ FRAGANCE | Perfumería, Plata y Gorras</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+        
+        body { font-family: 'Montserrat', sans-serif; }
+        .serif-font { font-family: 'Playfair Display', serif; }
+        
+        /* Animaciones generales */
+        .fade-in { animation: fadeIn 0.4s ease-in forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Efecto Hover en las tarjetas de producto */
+        .product-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+        .product-card:hover { transform: scale(1.03); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); z-index: 10; }
+        
+        /* Información oculta que se expande al pasar el cursor */
+        .info-overlay { max-height: 0; opacity: 0; transition: all 0.4s ease-in-out; overflow: hidden; }
+        .product-card:hover .info-overlay { max-height: 80px; opacity: 1; margin-top: 0.75rem; }
+
+        /* Carrusel Original */
+        .slide { transition: opacity 1s ease-in-out; opacity: 0; position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+        .slide.active { opacity: 1; z-index: 1; }
+        .overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.6); z-index: 2; }
+
+        /* Barras de progreso de notas olfativas */
+        .note-bar-fill { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
+        
+        /* Ocultar vistas por defecto para la navegación SPA */
+        .view-section { display: none; }
+        .view-section.active { display: block; }
+        
+        /* Scrollbar personalizado */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d6d3d1; border-radius: 10px; }
+
+        /* ========================================================
+           CARRUSEL 3D (Anillo estirado/Óvalo giratorio) 
+           ======================================================== */
+        .carousel-3d-scene {
+            width: 100%;
+            height: 420px;
+            perspective: 1000px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #f5f5f4, #ffffff);
+            transform: scaleX(1.4); 
+        }
+        .carousel-3d-spinner {
+            width: 220px;
+            height: 280px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: spin-carousel 25s linear infinite;
+        }
+        .carousel-3d-spinner:hover {
+            animation-play-state: paused;
+        }
+        @keyframes spin-carousel {
+            0% { transform: rotateY(0deg); }
+            100% { transform: rotateY(-360deg); }
+        }
+        .carousel-3d-item {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e5e5e4;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.15);
+        }
+        .carousel-3d-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.4);
+            transition: background 0.4s;
+            pointer-events: none;
+            border-radius: 12px;
+        }
+        .carousel-3d-spinner:hover .carousel-3d-item::after {
+            background: rgba(255,255,255,0);
+        }
+
+        /* Etiqueta de Agotado */
+        .out-of-stock-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.7);
+            backdrop-filter: blur(2px);
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+        .out-of-stock-badge {
+            background-color: #ef4444;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            transform: rotate(-10deg);
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+        }
+
+        /* Animación para estrellas de reseña */
+        .star-rating i { cursor: pointer; transition: color 0.2s; }
+        .star-rating i:hover, .star-rating i.hovered, .star-rating i.active { color: #fbbf24; }
+        
+        /* Ocultar scrollbar visual en historias */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-900 antialiased overflow-x-hidden">
+
+    <a href="https://wa.me/524641888315?text=Hola%20OPJ%20FRAGANCE,%20vengo%20de%20la%20p%C3%A1gina%20web." 
+       target="_blank" rel="noopener noreferrer"
+       class="fixed bottom-6 right-6 z-40 bg-green-500 text-white w-14 h-14 rounded-full flex items-center justify-center shadow-2xl hover:scale-110 transition-transform duration-300">
+        <i class="fab fa-whatsapp text-3xl"></i>
+    </a>
+
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between relative">
+            <a href="#" onclick="showView('inicio')" class="flex flex-col z-50">
+                <span class="serif-font text-2xl font-bold tracking-widest text-stone-950">OPJ FRAGANCE</span>
+            </a>
+            
+            <button onclick="toggleMenu()" class="text-stone-900 text-2xl z-50 p-2 focus:outline-none">
+                <i id="menu-icon" class="fas fa-bars"></i>
+            </button>
+
+            <nav id="dropdown-menu" class="absolute top-full right-4 mt-2 w-56 bg-white border border-stone-100 shadow-2xl rounded-lg py-4 flex flex-col space-y-2 opacity-0 pointer-events-none transition-all duration-300 transform -translate-y-2 z-50">
+                <a href="#" onclick="showView('perfumes'); toggleMenu()" class="px-6 py-2 text-sm font-semibold tracking-wider uppercase text-stone-600 hover:bg-stone-50 hover:text-stone-950 transition">Perfumería</a>
+                <a href="#" onclick="showView('plata'); toggleMenu()" class="px-6 py-2 text-sm font-semibold tracking-wider uppercase text-stone-600 hover:bg-stone-50 hover:text-stone-950 transition">Pulsos de Plata</a>
+                <a href="#" onclick="showView('gorras'); toggleMenu()" class="px-6 py-2 text-sm font-semibold tracking-wider uppercase text-stone-600 hover:bg-stone-50 hover:text-stone-950 transition">Gorras</a>
+                <a href="#referencias" onclick="showView('inicio'); toggleMenu()" class="px-6 py-2 text-sm font-semibold tracking-wider uppercase text-stone-600 hover:bg-stone-50 hover:text-stone-950 transition">Entregas</a>
+                <a href="#resenas" onclick="showView('inicio'); toggleMenu()" class="px-6 py-2 text-sm font-semibold tracking-wider uppercase text-stone-600 hover:bg-stone-50 hover:text-stone-950 transition">Reseñas</a>
+                <div class="border-t border-stone-100 mx-4 my-2"></div>
+                <a href="https://instagram.com/OPJ_FRAGANCE" target="_blank" class="px-6 py-2 text-pink-600 hover:text-pink-800 transition text-sm font-bold flex items-center"><i class="fab fa-instagram mr-2 text-lg"></i> Instagram</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="min-h-screen">
+        <section id="inicio" class="view-section active fade-in">
+            <div class="relative bg-stone-900 text-white min-h-[60vh] flex items-center overflow-hidden">
+                <div id="hero-slider" class="absolute inset-0 w-full h-full">
+                    <img src="https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=1000&auto=format&fit=crop" loading="lazy" class="slide active" alt="Perfumería Global">
+                    <img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=1000&auto=format&fit=crop" loading="lazy" class="slide" alt="Accesorios y Plata">
+                    <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=1000&auto=format&fit=crop" loading="lazy" class="slide" alt="Gorras de Colección">
+                    <img src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=1000&auto=format&fit=crop" loading="lazy" class="slide" alt="Esencias Premium">
+                    <img src="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=1000&auto=format&fit=crop" loading="lazy" class="slide" alt="Estilo Exclusivo">
+                    <div class="overlay"></div>
+                </div>
+                <div class="relative max-w-7xl mx-auto px-4 py-20 text-center z-10">
+                    <h1 class="serif-font text-4xl sm:text-6xl font-normal tracking-wide max-w-4xl mx-auto leading-tight mb-6">Tu Estilo. Tu Esencia.</h1>
+                    <p class="text-stone-300 text-lg max-w-2xl mx-auto mb-10 font-light leading-relaxed">Alta perfumería, pulsos de plata exclusivos y gorras premium.</p>
+                </div>
+            </div>
+
+            <div class="w-full border-b border-stone-200 overflow-hidden">
+                <div class="text-center pt-10 pb-2 relative z-10 bg-gradient-to-b from-stone-50 to-transparent">
+                    <h3 class="serif-font text-2xl text-stone-800">Descubre Nuestro Catálogo</h3>
+                    <p class="text-sm text-stone-500 uppercase tracking-widest mt-1">Gira para ver más</p>
+                </div>
+                <div class="carousel-3d-scene">
+                    <div class="carousel-3d-spinner" id="carousel-3d-spinner">
+                        </div>
+                </div>
+            </div>
+
+            <div class="max-w-7xl mx-auto px-4 py-16">
+                <div class="text-center mb-12">
+                    <h2 class="serif-font text-3xl font-bold text-stone-900">Productos Destacados</h2>
+                    <div class="w-16 h-1 bg-stone-900 mx-auto mt-4"></div>
+                </div>
+
+                <div class="mb-12">
+                    <div class="border-t-2 border-stone-900 pt-2 inline-block mb-6 cursor-pointer hover:opacity-70 transition" onclick="showView('perfumes')">
+                        <span class="text-sm font-bold uppercase tracking-widest flex items-center">Perfumería Selecta <i class="fas fa-chevron-right ml-2 text-xs"></i></span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="product-card bg-white border border-stone-200 rounded-lg overflow-hidden flex cursor-pointer" onclick="openModal('ysl_myslf')">
+                            <div class="w-2/5 bg-stone-100 flex items-center justify-center p-2 relative"><img src="https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=400&auto=format&fit=crop" loading="lazy" class="max-h-40 object-contain drop-shadow-md" alt="MYSLF"></div>
+                            <div class="w-3/5 p-6 flex flex-col justify-center">
+                                <span class="text-xs uppercase tracking-wider text-stone-400 font-semibold">Yves Saint Laurent</span>
+                                <h3 class="font-bold text-lg text-stone-950 mt-1">MYSLF 3.4oz EDP</h3>
+                                <div class="info-overlay text-sm text-stone-600">Una declaración de masculinidad moderna. Decants disponibles desde 3ml.</div>
+                                <span class="text-lg font-bold text-stone-900 mt-2">$2,600 MXN</span>
+                            </div>
+                        </div>
+                        <div class="product-card bg-white border border-stone-200 rounded-lg overflow-hidden flex cursor-pointer" onclick="openModal('armaf_precieux')">
+                            <div class="w-2/5 bg-stone-100 flex items-center justify-center p-2 relative"><img src="https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=400&auto=format&fit=crop" loading="lazy" class="max-h-40 object-contain drop-shadow-md" alt="Precieux"></div>
+                            <div class="w-3/5 p-6 flex flex-col justify-center">
+                                <span class="text-xs uppercase tracking-wider text-stone-400 font-semibold">Armaf</span>
+                                <h3 class="font-bold text-lg text-stone-950 mt-1">Club De Nuit Precieux 1</h3>
+                                <div class="info-overlay text-sm text-stone-600">Fragancia opulenta, frutal y ahumada. Alta duración y proyección.</div>
+                                <span class="text-lg font-bold text-stone-900 mt-2">$1,500 MXN</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 md:gap-8">
+                    <div>
+                        <div class="border-t-2 border-stone-900 pt-2 inline-block mb-6 cursor-pointer hover:opacity-70 transition" onclick="showView('gorras')">
+                            <span class="text-xs md:text-sm font-bold uppercase tracking-widest flex items-center">Gorras Premium <i class="fas fa-chevron-right ml-2 text-xs"></i></span>
+                        </div>
+                        <div class="product-card bg-white border border-stone-200 rounded-lg overflow-hidden cursor-pointer" onclick="openModal('gorra_newera')">
+                            <div class="h-48 bg-stone-100 flex items-center justify-center p-4 relative"><img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=400&auto=format&fit=crop" loading="lazy" class="max-h-full object-contain" alt="Gorra"></div>
+                            <div class="p-4 text-center">
+                                <h3 class="font-bold text-sm md:text-base text-stone-950">Gorra Edición Especial</h3>
+                                <div class="info-overlay text-xs text-stone-600">Diseño exclusivo, corona alta y bordados premium.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="border-t-2 border-stone-900 pt-2 inline-block mb-6 cursor-pointer hover:opacity-70 transition" onclick="showView('plata')">
+                            <span class="text-xs md:text-sm font-bold uppercase tracking-widest flex items-center">Plata Ley .925 <i class="fas fa-chevron-right ml-2 text-xs"></i></span>
+                        </div>
+                        <div class="product-card bg-white border border-stone-200 rounded-lg overflow-hidden cursor-pointer" onclick="openModal('pulso_cubano')">
+                            <div class="h-48 bg-stone-100 flex items-center justify-center p-4 relative"><img src="https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=400&auto=format&fit=crop" loading="lazy" class="max-h-full object-contain" alt="Pulso"></div>
+                            <div class="p-4 text-center">
+                                <h3 class="font-bold text-sm md:text-base text-stone-950">Pulso Tejido Cubano</h3>
+                                <div class="info-overlay text-xs text-stone-600">Eslabones sólidos con broche de seguridad reforzado.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="referencias" class="bg-stone-50 py-16 border-t border-stone-200 text-center">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="mb-8">
+                        <h2 class="serif-font text-2xl font-bold text-stone-900">Entregas Personales</h2>
+                        <p class="text-xs font-bold text-stone-400 uppercase tracking-widest mt-1">Haz clic para ver las historias de nuestras entregas</p>
+                    </div>
+                    
+                    <div class="flex space-x-6 overflow-x-auto pb-4 pt-2 hide-scroll snap-x justify-center w-full max-w-4xl mx-auto">
+                        <div class="flex flex-col items-center cursor-pointer flex-shrink-0 snap-center hover:scale-105 transition-transform" 
+                             onclick="openStory('https://images.unsplash.com/photo-1580974582390-349f28682dc1?q=80&w=600&auto=format&fit=crop', 'Entrega a Carlos en su oficina 📦')">
+                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full p-1 bg-gradient-to-tr from-yellow-400 via-orange-500 to-pink-500 shadow-md">
+                                <div class="w-full h-full bg-white rounded-full p-[2px]">
+                                    <img src="https://images.unsplash.com/photo-1580974582390-349f28682dc1?q=80&w=200&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover rounded-full">
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-stone-700 mt-2 text-center w-20 truncate">Salamanca</span>
+                        </div>
+
+                        <div class="flex flex-col items-center cursor-pointer flex-shrink-0 snap-center hover:scale-105 transition-transform" 
+                             onclick="openStory('https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?q=80&w=600&auto=format&fit=crop', 'Envío listo y empacado para viajar ✈️')">
+                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full p-1 bg-gradient-to-tr from-yellow-400 via-orange-500 to-pink-500 shadow-md">
+                                <div class="w-full h-full bg-white rounded-full p-[2px]">
+                                    <img src="https://images.unsplash.com/photo-1586864387967-d02ef85d93e8?q=80&w=200&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover rounded-full">
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-stone-700 mt-2 text-center w-20 truncate">Envíos</span>
+                        </div>
+
+                        <div class="flex flex-col items-center cursor-pointer flex-shrink-0 snap-center hover:scale-105 transition-transform" 
+                             onclick="openStory('https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=600&auto=format&fit=crop', 'Otra entrega exitosa del día ✨')">
+                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full p-1 bg-gradient-to-tr from-yellow-400 via-orange-500 to-pink-500 shadow-md">
+                                <div class="w-full h-full bg-white rounded-full p-[2px]">
+                                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=200&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover rounded-full">
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-stone-700 mt-2 text-center w-20 truncate">Centro</span>
+                        </div>
+
+                        <div class="flex flex-col items-center cursor-pointer flex-shrink-0 snap-center hover:scale-105 transition-transform" 
+                             onclick="openStory('https://images.unsplash.com/photo-1574634534894-89d7576c8259?q=80&w=600&auto=format&fit=crop', 'Punto de encuentro. ¡Gracias por la compra! 🤝')">
+                            <div class="w-20 h-20 md:w-24 md:h-24 rounded-full p-1 bg-gradient-to-tr from-yellow-400 via-orange-500 to-pink-500 shadow-md">
+                                <div class="w-full h-full bg-white rounded-full p-[2px]">
+                                    <img src="https://images.unsplash.com/photo-1574634534894-89d7576c8259?q=80&w=200&auto=format&fit=crop" loading="lazy" class="w-full h-full object-cover rounded-full">
+                                </div>
+                            </div>
+                            <span class="text-xs font-bold text-stone-700 mt-2 text-center w-20 truncate">Plaza</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="resenas" class="py-16 text-left">
+                <div class="max-w-7xl mx-auto px-4">
+                    <div class="text-center mb-12">
+                        <h2 class="serif-font text-3xl font-bold text-stone-900">Lo que dicen nuestros clientes</h2>
+                        <div class="w-16 h-1 bg-stone-900 mx-auto mt-4"></div>
+                    </div>
+                    
+                    <div class="flex flex-col lg:flex-row gap-12">
+                        <div class="lg:w-1/3 bg-white border border-stone-200 rounded-xl p-6 shadow-lg h-fit">
+                            <h3 class="font-bold text-lg mb-4 text-stone-800">Deja tu reseña</h3>
+                            <form id="review-form" class="space-y-4">
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Nombre</label>
+                                    <input type="text" id="rev-name" required class="w-full border border-stone-300 rounded px-3 py-2 focus:outline-none focus:border-stone-900 text-sm">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Calificación</label>
+                                    <div class="star-rating text-stone-300 text-xl flex gap-1" id="star-selector">
+                                        <i class="fas fa-star" data-val="1"></i>
+                                        <i class="fas fa-star" data-val="2"></i>
+                                        <i class="fas fa-star" data-val="3"></i>
+                                        <i class="fas fa-star" data-val="4"></i>
+                                        <i class="fas fa-star" data-val="5"></i>
+                                    </div>
+                                    <input type="hidden" id="rev-stars" value="0">
+                                </div>
+                                <div>
+                                    <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Comentario</label>
+                                    <textarea id="rev-text" required rows="3" class="w-full border border-stone-300 rounded px-3 py-2 focus:outline-none focus:border-stone-900 text-sm resize-none"></textarea>
+                                </div>
+                                <button type="submit" class="w-full bg-stone-900 text-white font-bold uppercase text-sm py-3 rounded hover:bg-stone-800 transition shadow">Publicar Reseña</button>
+                            </form>
+                        </div>
+
+                        <div class="lg:w-2/3">
+                            <div id="reviews-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div class="text-center text-stone-400 col-span-full py-10">
+                                    <i class="fas fa-spinner fa-spin text-2xl mb-3"></i>
+                                    <p>Cargando reseñas reales...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="perfumes" class="view-section fade-in py-12">
+            <div class="max-w-7xl mx-auto px-4">
+                <button onclick="showView('inicio')" class="mb-8 text-stone-500 hover:text-stone-900 transition font-bold text-sm uppercase flex items-center"><i class="fas fa-arrow-left mr-2"></i> Volver al Inicio</button>
+                <h2 class="serif-font text-4xl font-bold text-stone-900 mb-8">Perfumería</h2>
+                <div class="flex space-x-4 mb-10 border-b border-stone-200 pb-4 overflow-x-auto">
+                    <button onclick="filterPerfumes('todos')" id="btn-perf-todos" class="perf-filter-btn text-stone-900 font-bold uppercase text-sm border-b-2 border-stone-900 pb-1 flex-shrink-0">Todos</button>
+                    <button onclick="filterPerfumes('hombre')" id="btn-perf-hombre" class="perf-filter-btn text-stone-400 font-bold uppercase text-sm hover:text-stone-700 pb-1 flex-shrink-0">Hombre</button>
+                    <button onclick="filterPerfumes('mujer')" id="btn-perf-mujer" class="perf-filter-btn text-stone-400 font-bold uppercase text-sm hover:text-stone-700 pb-1 flex-shrink-0">Mujer</button>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="perfumes-grid"></div>
+            </div>
+        </section>
+
+        <section id="gorras" class="view-section fade-in py-12">
+            <div class="max-w-7xl mx-auto px-4">
+                <button onclick="showView('inicio')" class="mb-8 text-stone-500 hover:text-stone-900 transition font-bold text-sm uppercase flex items-center"><i class="fas fa-arrow-left mr-2"></i> Volver al Inicio</button>
+                <h2 class="serif-font text-4xl font-bold text-stone-900 mb-8">Gorras Premium</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="gorras-grid"></div>
+            </div>
+        </section>
+
+        <section id="plata" class="view-section fade-in py-12">
+            <div class="max-w-7xl mx-auto px-4">
+                <button onclick="showView('inicio')" class="mb-8 text-stone-500 hover:text-stone-900 transition font-bold text-sm uppercase flex items-center"><i class="fas fa-arrow-left mr-2"></i> Volver al Inicio</button>
+                <h2 class="serif-font text-4xl font-bold text-stone-900 mb-8">Pulsos de Plata</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" id="plata-grid"></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-stone-950 text-stone-400 py-8 text-center text-sm relative">
+        <span class="serif-font text-white text-lg font-bold tracking-widest block mb-2">OPJ FRAGANCE</span>
+        <p>&copy; 2026 OPJ FRAGANCE. Todos los derechos reservados.</p>
+        <button onclick="openAdmin()" class="absolute bottom-4 right-4 text-stone-700 hover:text-stone-300 transition" title="Acceso Admin">
+            <i class="fas fa-lock"></i>
+        </button>
+    </footer>
+
+    <div id="product-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 overflow-y-auto">
+        <div class="bg-white rounded-xl w-full max-w-5xl overflow-hidden shadow-2xl relative fade-in flex flex-col md:flex-row my-auto max-h-[95vh]">
+            <button onclick="closeModal()" class="absolute top-4 right-4 bg-stone-200 text-stone-800 w-8 h-8 rounded-full flex items-center justify-center hover:bg-stone-300 z-50 shadow"><i class="fa-solid fa-xmark"></i></button>
+            <div class="md:w-5/12 bg-stone-50 p-8 flex items-center justify-center border-b md:border-b-0 md:border-r border-stone-200 relative">
+                <img id="modal-img" src="" alt="Producto" class="max-h-72 md:max-h-96 object-contain drop-shadow-xl hover:scale-105 transition-transform duration-500">
+            </div>
+            <div class="md:w-7/12 p-6 md:p-8 bg-white overflow-y-auto custom-scrollbar flex flex-col">
+                <div class="mb-6">
+                    <span id="modal-brand" class="text-xs uppercase tracking-wider text-stone-400 font-bold"></span>
+                    <h2 id="modal-title" class="font-bold text-3xl text-stone-950 mt-1 mb-3 serif-font"></h2>
+                    <p id="modal-desc" class="text-stone-600 leading-relaxed text-sm"></p>
+                </div>
+                <div id="modal-decants-section" class="hidden w-full bg-stone-50 rounded-lg p-4 mb-6 border border-stone-200">
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-stone-900 mb-3"><i class="fas fa-vial mr-2"></i>Selecciona Tamaño</h4>
+                    <div id="decants-container" class="flex flex-wrap gap-2"></div>
+                </div>
+                
+                <div id="modal-fragrantica-notes" class="hidden w-full bg-stone-50 rounded-lg p-5 mb-6 border border-stone-100">
+                    <h4 class="text-xs font-bold uppercase tracking-widest text-stone-900 mb-4 border-b border-stone-200 pb-2"><i class="fas fa-flask mr-2"></i>Acordes Principales</h4>
+                    <div id="notes-container" class="space-y-4"></div>
+                    
+                    <div id="modal-detailed-notes" class="mt-6 pt-4 border-t border-stone-200">
+                        <h4 class="text-xs font-bold uppercase tracking-widest text-stone-900 mb-3 text-center">Pirámide Olfativa</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-center text-sm mt-4">
+                            <div class="bg-white p-3 rounded shadow-sm border border-stone-100">
+                                <span class="block font-bold text-stone-800 mb-1"><i class="fas fa-wind text-stone-400 mr-1"></i>Salida</span>
+                                <p id="note-top" class="text-stone-500 text-xs"></p>
+                            </div>
+                            <div class="bg-white p-3 rounded shadow-sm border border-stone-100">
+                                <span class="block font-bold text-stone-800 mb-1"><i class="fas fa-heart text-stone-400 mr-1"></i>Corazón</span>
+                                <p id="note-heart" class="text-stone-500 text-xs"></p>
+                            </div>
+                            <div class="bg-white p-3 rounded shadow-sm border border-stone-100">
+                                <span class="block font-bold text-stone-800 mb-1"><i class="fas fa-gem text-stone-400 mr-1"></i>Base</span>
+                                <p id="note-base" class="text-stone-500 text-xs"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-auto pt-4 flex flex-col sm:flex-row sm:items-center justify-between border-t border-stone-100 relative">
+                    <span id="modal-price" class="text-3xl font-bold text-stone-950 mb-4 sm:mb-0"></span>
+                    <a id="modal-wa-btn" href="#" target="_blank" class="w-full sm:w-auto px-8 bg-green-500 text-white text-center py-3 rounded-lg text-sm font-bold uppercase tracking-widest hover:bg-green-600 transition flex items-center justify-center shadow-lg hover:shadow-xl">
+                        <i class="fab fa-whatsapp mr-2 text-xl"></i> Solicitar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="story-modal" class="hidden fixed inset-0 z-[60] bg-black flex flex-col items-center justify-center fade-in">
+        <div class="absolute top-4 left-0 right-0 flex justify-between px-4 z-10 items-center">
+            <div class="flex space-x-2 w-full mr-4">
+                <div class="h-1 bg-white/30 rounded-full overflow-hidden w-full">
+                    <div id="story-progress" class="h-full bg-white w-0"></div>
+                </div>
+            </div>
+            <button onclick="closeStory()" class="text-white text-2xl drop-shadow-md p-2 hover:scale-110 transition-transform"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="relative w-full max-w-md h-[80vh] flex items-center justify-center px-4">
+            <img id="story-img" src="" class="max-h-full max-w-full object-contain rounded-lg shadow-2xl">
+            <div class="absolute bottom-10 left-4 right-4 text-center">
+                <p id="story-caption" class="text-white text-sm md:text-lg font-bold drop-shadow-lg bg-black/50 p-3 rounded-xl inline-block backdrop-blur-sm"></p>
+            </div>
+        </div>
+    </div>
+
+    <div id="admin-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
+        <div class="bg-white rounded-xl w-full max-w-3xl overflow-hidden shadow-2xl relative fade-in flex flex-col max-h-[90vh]">
+            <div class="bg-stone-900 text-white p-4 flex justify-between items-center">
+                <h3 class="font-bold uppercase tracking-widest"><i class="fas fa-lock mr-2"></i> Panel de Administración</h3>
+                <button onclick="closeAdmin()" class="text-white hover:text-stone-300"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div class="flex border-b border-stone-200 bg-stone-50">
+                <button onclick="switchAdminTab('inventario')" id="tab-btn-inventario" class="flex-1 py-3 font-bold text-stone-900 border-b-2 border-stone-900 uppercase text-xs tracking-widest transition">Inventario Actual</button>
+                <button onclick="switchAdminTab('nuevo')" id="tab-btn-nuevo" class="flex-1 py-3 font-bold text-stone-400 hover:text-stone-700 border-b-2 border-transparent uppercase text-xs tracking-widest transition">Añadir Nuevo</button>
+            </div>
+
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 relative bg-stone-50">
+                <div id="admin-tab-inventario">
+                    <p class="text-sm text-stone-500 mb-4">Cambios en tiempo real gracias a Firebase. Activa o desactiva con un clic.</p>
+                    <div id="admin-product-list" class="space-y-4">
+                        </div>
+                </div>
+
+                <div id="admin-tab-nuevo" class="hidden">
+                    <form id="form-add-product" class="space-y-5" onsubmit="event.preventDefault(); saveNewProduct();">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Nombre del Producto</label>
+                                <input type="text" id="new-title" required placeholder="Ej: Eros Parfum" class="w-full border border-stone-300 rounded px-3 py-2 text-sm focus:border-stone-900 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Marca / Diseñador</label>
+                                <input type="text" id="new-brand" required placeholder="Ej: Versace" class="w-full border border-stone-300 rounded px-3 py-2 text-sm focus:border-stone-900 focus:outline-none">
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Categoría</label>
+                                <select id="new-cat" required onchange="toggleNewPerfumeFields()" class="w-full border border-stone-300 rounded px-3 py-2 text-sm focus:border-stone-900 focus:outline-none bg-white">
+                                    <option value="perfume_hombre">Perfumería - Hombre</option>
+                                    <option value="perfume_mujer">Perfumería - Mujer</option>
+                                    <option value="perfume_todos">Perfumería - Unisex</option>
+                                    <option value="gorras">Gorras Premium</option>
+                                    <option value="plata">Pulsos de Plata</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Precio (Botella completa / Único)</label>
+                                <input type="text" id="new-price" required placeholder="Ej: $1,500 MXN" class="w-full border border-stone-300 rounded px-3 py-2 text-sm focus:border-stone-900 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Descripción</label>
+                            <textarea id="new-desc" required rows="2" placeholder="Escribe un resumen o las características del producto..." class="w-full border border-stone-300 rounded px-3 py-2 text-sm focus:border-stone-900 focus:outline-none resize-none"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="text-xs font-bold uppercase text-stone-500 block mb-1">Foto del Producto (URL o Archivo local)</label>
+                            <input type="file" id="new-img" accept="image/*" class="w-full text-sm text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-xs file:font-bold file:bg-stone-200 file:text-stone-700 hover:file:bg-stone-300 cursor-pointer border border-stone-300 p-1 rounded bg-white">
+                        </div>
+
+                        <div id="new-perfume-fields" class="bg-white p-4 border border-stone-300 rounded mt-4 shadow-sm">
+                            <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-stone-200 pb-3 mb-3 gap-3">
+                                <h4 class="font-bold uppercase tracking-widest text-stone-800 text-sm"><i class="fas fa-flask mr-2"></i>Datos Olfativos</h4>
+                                <button type="button" id="btn-auto-search" onclick="autoSearchNotes()" class="bg-stone-900 text-white px-3 py-2 md:py-1.5 rounded text-xs font-bold uppercase shadow hover:bg-stone-800 transition flex items-center w-full md:w-auto justify-center">
+                                    <i class="fas fa-globe mr-2"></i> Autocompletar de la web
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mb-4">
+                                <div>
+                                    <label class="text-[10px] font-bold uppercase text-stone-500 block mb-1">Notas de Salida</label>
+                                    <input type="text" id="new-note-top" placeholder="Ej: Bergamota, Limón" class="w-full border border-stone-300 rounded px-2 py-1 text-xs focus:border-stone-900 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold uppercase text-stone-500 block mb-1">Notas de Corazón</label>
+                                    <input type="text" id="new-note-heart" placeholder="Ej: Jazmín, Rosas" class="w-full border border-stone-300 rounded px-2 py-1 text-xs focus:border-stone-900 focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="text-[10px] font-bold uppercase text-stone-500 block mb-1">Notas de Base</label>
+                                    <input type="text" id="new-note-base" placeholder="Ej: Ámbar, Almizcle" class="w-full border border-stone-300 rounded px-2 py-1 text-xs focus:border-stone-900 focus:outline-none">
+                                </div>
+                            </div>
+
+                            <label class="text-[10px] font-bold uppercase text-stone-500 block mb-1">Acordes Principales (Se mostrarán en la animación visual)</label>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <input type="text" id="new-accord-1" placeholder="Acorde 1 (Ej: Cítrico)" class="w-full border border-stone-300 rounded px-2 py-1 text-xs focus:border-stone-900 focus:outline-none">
+                                <input type="text" id="new-accord-2" placeholder="Acorde 2 (Ej: Amaderado)" class="w-full border border-stone-300 rounded px-2 py-1 text-xs focus:border-stone-900 focus:outline-none">
+                                <input type="text" id="new-accord-3" placeholder="Acorde 3 (Ej: Dulce)" class="w-full border border-stone-300 rounded px-2 py-1 text-xs focus:border-stone-900 focus:outline-none">
+                            </div>
+                        </div>
+
+                        <div class="pt-4 mt-4 border-t border-stone-200 text-right">
+                            <button type="submit" class="bg-green-600 text-white px-8 py-3 text-sm font-bold uppercase rounded hover:bg-green-700 transition shadow-lg w-full md:w-auto flex items-center justify-center">
+                                <i class="fas fa-cloud-arrow-up mr-2"></i> Subir a la Nube
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+        // LA CONFIGURACIÓN QUE COPIASTE DE TU PANEL DE FIREBASE
+        const firebaseConfig = {
+            apiKey: "AIzaSyBKM_hSNAsgI-deAQ7fiXsRqCho4GM4HpU",
+            authDomain: "opjfragance.firebaseapp.com",
+            projectId: "opjfragance",
+            storageBucket: "opjfragance.firebasestorage.app",
+            messagingSenderId: "861948681758",
+            appId: "1:861948681758:web:ed4d6037cecad947fb180f",
+            measurementId: "G-Q8F89183BH"
+        };
+
+        // INICIALIZAMOS FIREBASE Y LA BASE DE DATOS
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // --- BASE DE DATOS LOCAL INICIAL (Los 20 que programaste a mano) ---
+        const productsDB = {
+            // == MUJER ==
+            'ariana_cloud': {
+                category: 'perfumes', gender: 'mujer', brand: 'Ariana Grande', title: 'Cloud EDP 100ml', desc: 'Un aroma dulce, cremoso y sumamente adictivo.', img: 'https://images.unsplash.com/photo-1610461888750-10bfc601b874?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,500 MXN', 'Decant 3ml': '$90 MXN', 'Decant 5ml': '$140 MXN', 'Decant 10ml': '$250 MXN' },
+                notes: [{ name: 'Dulce', icon: 'fa-candy-cane', level: '95%', color: 'bg-pink-400' }, { name: 'Lactónico', icon: 'fa-glass-water', level: '80%', color: 'bg-stone-200' }, { name: 'Vainilla', icon: 'fa-ice-cream', level: '70%', color: 'bg-yellow-200' }],
+                detailedNotes: { top: 'Lavanda, Pera, Bergamota', heart: 'Crema batida, Praliné, Coco, Orquídea', base: 'Almizcle, Notas amaderadas' }
+            },
+            'ariana_thankyounext': {
+                category: 'perfumes', gender: 'mujer', brand: 'Ariana Grande', title: 'Thank U Next EDP 3.4oz', desc: 'Dulce y atrevida. Juvenil y muy llamativa.', img: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,310 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$130 MXN', 'Decant 10ml': '$220 MXN' },
+                notes: [{ name: 'Dulce', icon: 'fa-candy-cane', level: '90%', color: 'bg-pink-400' }, { name: 'Coco', icon: 'fa-tree', level: '85%', color: 'bg-stone-300' }, { name: 'Afrutado', icon: 'fa-apple-whole', level: '70%', color: 'bg-red-400' }],
+                detailedNotes: { top: 'Frambuesa, Pera blanca', heart: 'Coco, Rosa rosada', base: 'Macarrones dulces, Almizcle' }
+            },
+            'dg_lightblue_women': {
+                category: 'perfumes', gender: 'mujer', brand: 'Dolce & Gabbana', title: 'Light Blue EDT 3.4oz', desc: 'La esencia del verano. Impecable y limpia.', img: 'https://images.unsplash.com/photo-1498612753354-772a30629934?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,360 MXN', 'Decant 3ml': '$85 MXN', 'Decant 5ml': '$135 MXN', 'Decant 10ml': '$230 MXN' },
+                notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '95%', color: 'bg-yellow-400' }, { name: 'Fresco', icon: 'fa-droplet', level: '80%', color: 'bg-blue-300' }, { name: 'Amaderado', icon: 'fa-tree', level: '65%', color: 'bg-amber-700' }],
+                detailedNotes: { top: 'Limón Siciliano, Manzana, Cedro, Campanilla', heart: 'Bambú, Jazmín, Rosa blanca', base: 'Cedro, Almizcle, Ámbar' }
+            },
+            'lattafa_eclaire': {
+                category: 'perfumes', gender: 'mujer', brand: 'Lattafa', title: 'Eclaire EDP 3.4oz', desc: 'Un postre embotellado. Totalmente gourmand y seductor.', img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$980 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$110 MXN', 'Decant 10ml': '$190 MXN' },
+                notes: [{ name: 'Caramelo', icon: 'fa-cookie', level: '95%', color: 'bg-orange-400' }, { name: 'Lactónico', icon: 'fa-glass-water', level: '85%', color: 'bg-stone-200' }, { name: 'Vainilla', icon: 'fa-ice-cream', level: '80%', color: 'bg-yellow-200' }],
+                detailedNotes: { top: 'Caramelo, Leche, Azúcar', heart: 'Flores blancas, Miel', base: 'Vainilla, Praliné, Almizcle' }
+            },
+            'coach_love': {
+                category: 'perfumes', gender: 'mujer', brand: 'Coach', title: 'Love EDP 90ml', desc: 'Romántica y juguetona. Fresa salvaje brillante y corazón de rosa roja.', img: 'https://images.unsplash.com/photo-1518085250893-61b6cb413986?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,390 MXN', 'Decant 3ml': '$90 MXN', 'Decant 5ml': '$140 MXN', 'Decant 10ml': '$240 MXN' },
+                notes: [{ name: 'Afrutado', icon: 'fa-apple-whole', level: '90%', color: 'bg-red-500' }, { name: 'Rosas', icon: 'fa-seedling', level: '80%', color: 'bg-rose-500' }, { name: 'Dulce', icon: 'fa-candy-cane', level: '65%', color: 'bg-pink-300' }],
+                detailedNotes: { top: 'Fresa salvaje, Mandarina', heart: 'Rosa roja, Jazmín Sambac', base: 'Madera de Cedro, Ámbar' }
+            },
+            'sabrina_sweet_tooth': {
+                category: 'perfumes', gender: 'mujer', brand: 'Sabrina Carpenter', title: 'Sweet Tooth Caramel Dream 75ml', desc: 'Caramelo oscuro, trozos de chocolate, pachulí y un toque cremoso.', img: 'https://images.unsplash.com/photo-1623341214825-9f4f963727da?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,700 MXN', 'Decant 3ml': '$110 MXN', 'Decant 5ml': '$180 MXN', 'Decant 10ml': '$290 MXN' },
+                notes: [{ name: 'Chocolate', icon: 'fa-cookie', level: '95%', color: 'bg-amber-900' }, { name: 'Caramelo', icon: 'fa-cubes', level: '85%', color: 'bg-amber-600' }, { name: 'Dulce', icon: 'fa-candy-cane', level: '75%', color: 'bg-pink-400' }],
+                detailedNotes: { top: 'Azúcar moreno, Leche de almendras', heart: 'Chocolate oscuro, Caramelo fundido', base: 'Pachulí, Vainilla, Almizcle' }
+            },
+            'afnan_9am_femme': {
+                category: 'perfumes', gender: 'mujer', brand: 'Afnan', title: '9AM Pour Femme EDP 3.4oz', desc: 'Elegante, fresca e ideal para el día. Combina notas cítricas de mandarina.', img: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$950 MXN', 'Decant 3ml': '$65 MXN', 'Decant 5ml': '$100 MXN', 'Decant 10ml': '$180 MXN' },
+                notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-300' }, { name: 'Floral Blanco', icon: 'fa-seedling', level: '80%', color: 'bg-stone-100' }, { name: 'Fresco', icon: 'fa-wind', level: '70%', color: 'bg-blue-200' }],
+                detailedNotes: { top: 'Mandarina, Pomelo, Cardamomo', heart: 'Flor de Azahar, Jazmín, Lavanda', base: 'Almizcle, Ámbar, Notas amaderadas' }
+            },
+            'lattafa_yara': {
+                category: 'perfumes', gender: 'mujer', brand: 'Lattafa', title: 'Yara EDP 3.4oz', desc: 'Famosa por su perfil aterciopelado. Batido cremoso de frutas tropicales.', img: 'https://images.unsplash.com/photo-1585218356057-e23f81e05d0e?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$930 MXN', 'Decant 3ml': '$65 MXN', 'Decant 5ml': '$100 MXN', 'Decant 10ml': '$170 MXN' },
+                notes: [{ name: 'Dulce', icon: 'fa-candy-cane', level: '90%', color: 'bg-pink-400' }, { name: 'Tropical', icon: 'fa-umbrella-beach', level: '85%', color: 'bg-orange-300' }, { name: 'Vainilla', icon: 'fa-ice-cream', level: '80%', color: 'bg-yellow-200' }],
+                detailedNotes: { top: 'Orquídea, Heliotropo, Naranja', heart: 'Gourmand, Frutas tropicales', base: 'Vainilla, Almizcle, Sándalo' }
+            },
+            'armaf_cdn_women': {
+                category: 'perfumes', gender: 'mujer', brand: 'Armaf', title: 'Club De Nuit EDP 3.6oz', desc: 'Sofisticación pura. Rosa, cítricos vibrantes y pachulí terroso.', img: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$960 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$110 MXN', 'Decant 10ml': '$185 MXN' },
+                notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-400' }, { name: 'Pachulí', icon: 'fa-leaf', level: '80%', color: 'bg-green-700' }, { name: 'Rosa', icon: 'fa-seedling', level: '70%', color: 'bg-rose-400' }],
+                detailedNotes: { top: 'Naranja, Pomelo, Bergamota, Melocotón', heart: 'Rosa, Jazmín, Geranio, Lichi', base: 'Pachulí, Vainilla, Almizcle, Vetiver' }
+            },
+            'ch_212_vip_women': {
+                category: 'perfumes', gender: 'mujer', brand: 'Carolina Herrera', title: '212 VIP EDP 2.7oz', desc: 'La reina de la noche. Cocktail embriagador de ron, maracuyá exótica.', img: 'https://images.unsplash.com/photo-1557170366-eb52bc726b27?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,650 MXN', 'Decant 3ml': '$110 MXN', 'Decant 5ml': '$170 MXN', 'Decant 10ml': '$280 MXN' },
+                notes: [{ name: 'Ron / Licor', icon: 'fa-martini-glass-empty', level: '90%', color: 'bg-amber-500' }, { name: 'Vainilla', icon: 'fa-ice-cream', level: '85%', color: 'bg-yellow-200' }, { name: 'Tropical', icon: 'fa-umbrella-beach', level: '75%', color: 'bg-orange-400' }],
+                detailedNotes: { top: 'Ron, Maracuyá', heart: 'Almizcle, Gardenia', base: 'Vainilla, Haba Tonka' }
+            },
+            'bharara_rome_paradox': {
+                category: 'perfumes', gender: 'mujer', brand: 'Bharara', title: 'Rome Paradox EDP 100ml', desc: 'Fresca y deslumbrante. Cítricos luminosos envueltos en flores blancas.', img: 'https://images.unsplash.com/photo-1615486171448-4fdcb31b2685?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,150 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$120 MXN', 'Decant 10ml': '$210 MXN' },
+                notes: [{ name: 'Floral', icon: 'fa-seedling', level: '85%', color: 'bg-pink-300' }, { name: 'Cítrico', icon: 'fa-lemon', level: '75%', color: 'bg-yellow-300' }, { name: 'Amaderado', icon: 'fa-tree', level: '65%', color: 'bg-stone-500' }],
+                detailedNotes: { top: 'Pera, Tangerina, Bergamota', heart: 'Jazmín, Azahar', base: 'Ámbar, Almizcle blanco, Vainilla' }
+            },
+
+            // == UNISEX ==
+            'vulcan_feu': {
+                category: 'perfumes', gender: 'todos', brand: 'French Avenue', title: 'Vulcan Feu EDP 3.4oz', desc: 'Una experiencia audaz y candente. Mezcla maderas nobles y especias cálidas.', img: 'https://images.unsplash.com/photo-1616843413587-9e3a37f7bbd8?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,120 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$115 MXN', 'Decant 10ml': '$195 MXN' },
+                notes: [{ name: 'Especiado Cálido', icon: 'fa-fire', level: '90%', color: 'bg-red-600' }, { name: 'Amaderado', icon: 'fa-tree', level: '80%', color: 'bg-amber-800' }, { name: 'Ámbar', icon: 'fa-gem', level: '75%', color: 'bg-yellow-600' }],
+                detailedNotes: { top: 'Azafrán, Pimienta rosa', heart: 'Madera de Agar, Pachulí', base: 'Ámbar, Vainilla, Cuero' }
+            },
+            'vulcan_baie': {
+                category: 'perfumes', gender: 'todos', brand: 'French Avenue', title: 'Vulcan Baie EDP 3.4oz', desc: 'Luminoso y revitalizante. Cítricos chispeantes con maderas limpias.', img: 'https://images.unsplash.com/photo-1543487945-139a97ed67e4?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,050 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$110 MXN', 'Decant 10ml': '$185 MXN' },
+                notes: [{ name: 'Aromático', icon: 'fa-leaf', level: '85%', color: 'bg-green-500' }, { name: 'Fresco', icon: 'fa-wind', level: '80%', color: 'bg-blue-300' }, { name: 'Amaderado', icon: 'fa-tree', level: '70%', color: 'bg-stone-700' }],
+                detailedNotes: { top: 'Bergamota, Mandarina, Limón', heart: 'Bayas de Enebro, Té verde', base: 'Cedro, Sándalo, Almizcle' }
+            },
+            'afnan_supremacy_collector': {
+                category: 'perfumes', gender: 'todos', brand: 'Afnan', title: 'Supremacy Collector\'s EDP 3.4oz', desc: 'Edición especial opulenta. Densa apertura de piña sobre base dulce.', img: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,260 MXN', 'Decant 3ml': '$85 MXN', 'Decant 5ml': '$135 MXN', 'Decant 10ml': '$225 MXN' },
+                notes: [{ name: 'Afrutado (Piña)', icon: 'fa-apple-whole', level: '90%', color: 'bg-yellow-600' }, { name: 'Ahumado', icon: 'fa-fire', level: '85%', color: 'bg-stone-600' }, { name: 'Cuero', icon: 'fa-suitcase', level: '70%', color: 'bg-stone-900' }],
+                detailedNotes: { top: 'Piña, Manzana, Bergamota, Grosella negra', heart: 'Abedul, Rosa, Jazmín', base: 'Musgo de roble, Ámbar gris, Vainilla, Cuero' }
+            },
+            'lattafa_art_of_universe': {
+                category: 'perfumes', gender: 'todos', brand: 'Lattafa Pride', title: 'Art Of Universe EDP 3.4oz', desc: 'Misterio oriental unisex. Madera de Oud limpia, rosa oscura y ámbar.', img: 'https://images.unsplash.com/photo-1616843413587-9e3a37f7bbd8?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,120 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$120 MXN', 'Decant 10ml': '$200 MXN' },
+                notes: [{ name: 'Oud / Madera', icon: 'fa-tree', level: '90%', color: 'bg-stone-900' }, { name: 'Rosa', icon: 'fa-seedling', level: '80%', color: 'bg-rose-600' }, { name: 'Ámbar', icon: 'fa-gem', level: '75%', color: 'bg-amber-600' }],
+                detailedNotes: { top: 'Azafrán, Nuez moscada', heart: 'Rosa turca, Oud suave', base: 'Ámbar, Sándalo, Almizcle oscuro' }
+            },
+
+            // == HOMBRE ==
+            'ysl_myslf': {
+                category: 'perfumes', gender: 'hombre', brand: 'Yves Saint Laurent', title: 'MYSLF EDP 3.4oz', desc: 'Una declaración de masculinidad moderna. Frescor de bergamota.', img: 'https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$2,600 MXN', 'Decant 3ml': '$150 MXN', 'Decant 5ml': '$240 MXN', 'Decant 10ml': '$420 MXN' },
+                notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-400' }, { name: 'Floral Blanco', icon: 'fa-seedling', level: '70%', color: 'bg-stone-300' }, { name: 'Amaderado', icon: 'fa-tree', level: '60%', color: 'bg-stone-800' }],
+                detailedNotes: { top: 'Bergamota de Calabria', heart: 'Flor de Azahar del naranjo', base: 'Ambrofix, Pachulí' }
+            },
+            'armaf_precieux': {
+                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Club de Nuit Precieux 1 Extrait', desc: 'Opulencia absoluta. Apertura frutal de piña con maderas y cuero ahumado.', img: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,500 MXN', 'Decant 3ml': '$90 MXN', 'Decant 5ml': '$150 MXN', 'Decant 10ml': '$260 MXN' },
+                notes: [{ name: 'Afrutado', icon: 'fa-apple-whole', level: '90%', color: 'bg-red-400' }, { name: 'Ahumado', icon: 'fa-fire', level: '80%', color: 'bg-stone-600' }, { name: 'Cuero', icon: 'fa-suitcase', level: '70%', color: 'bg-stone-900' }],
+                detailedNotes: { top: 'Piña, Pera, Bergamota', heart: 'Madera blanca, Jazmín', base: 'Musgo, Cuero, Pachulí' }
+            },
+            'bharara_rome_melancholia': {
+                category: 'perfumes', gender: 'hombre', brand: 'Bharara', title: 'Rome Melancholia EDP 3.4oz', desc: 'Cítricos chispeantes con un corazón aromático y maderas oscuras.', img: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,250 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$130 MXN', 'Decant 10ml': '$220 MXN' },
+                notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-500' }, { name: 'Especiado Fresco', icon: 'fa-leaf', level: '80%', color: 'bg-green-600' }, { name: 'Amaderado', icon: 'fa-tree', level: '75%', color: 'bg-stone-800' }],
+                detailedNotes: { top: 'Cítricos italianos, Lavanda', heart: 'Romero, Cardamomo', base: 'Vetiver, Ámbar' }
+            },
+            'afnan_turathi_electric': {
+                category: 'perfumes', gender: 'hombre', brand: 'Afnan', title: 'Turathi Electric EDP 3.0oz', desc: 'Vibrante y muy versátil. Notas cítricas de toronja potentes y maderas limpias.', img: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,120 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$120 MXN', 'Decant 10ml': '$200 MXN' },
+                notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '95%', color: 'bg-yellow-400' }, { name: 'Almizclado', icon: 'fa-wind', level: '80%', color: 'bg-stone-200' }, { name: 'Fresco Especiado', icon: 'fa-leaf', level: '70%', color: 'bg-blue-300' }],
+                detailedNotes: { top: 'Toronja rosada, Limón', heart: 'Jengibre, Notas acuáticas', base: 'Almizcle, Ámbar gris' }
+            },
+            'armaf_iconic': {
+                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Club De Nuit Blue Iconic EDP', desc: 'Elegancia azul para toda ocasión. Pomelo, menta, jengibre y maderas.', img: 'https://images.unsplash.com/photo-1611131649987-92d4bd28659b?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,090 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$115 MXN', 'Decant 10ml': '$195 MXN' },
+                notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '90%', color: 'bg-yellow-500' }, { name: 'Especiado Fresco', icon: 'fa-leaf', level: '80%', color: 'bg-green-400' }, { name: 'Incienso', icon: 'fa-fire', level: '70%', color: 'bg-stone-500' }],
+                detailedNotes: { top: 'Pomelo, Menta', heart: 'Jengibre, Nuez moscada', base: 'Incienso, Sándalo' }
+            },
+            'armaf_iconic_extrait': {
+                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Club De Nuit Iconic Extrait', desc: 'La versión más concentrada y densa. Mayor proyección y ámbar extremo.', img: 'https://images.unsplash.com/photo-1611131649987-92d4bd28659b?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,130 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$120 MXN', 'Decant 10ml': '$200 MXN' },
+                notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-600' }, { name: 'Ámbar', icon: 'fa-gem', level: '85%', color: 'bg-amber-600' }, { name: 'Amaderado', icon: 'fa-tree', level: '75%', color: 'bg-stone-800' }],
+                detailedNotes: { top: 'Pomelo intenso, Limón', heart: 'Nuez moscada, Jazmín', base: 'Ámbar extremo, Incienso denso' }
+            },
+            'bharara_rome_homme': {
+                category: 'perfumes', gender: 'hombre', brand: 'Bharara', title: 'Rome Pour Homme EDP 3.4oz', desc: 'Salida cítrica y afrutada que se asienta en un fondo de ámbar dulce.', img: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,000 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$110 MXN', 'Decant 10ml': '$185 MXN' },
+                notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-400' }, { name: 'Afrutado', icon: 'fa-apple-whole', level: '80%', color: 'bg-red-400' }, { name: 'Ámbar', icon: 'fa-gem', level: '70%', color: 'bg-amber-600' }],
+                detailedNotes: { top: 'Cítricos soleados, Piña', heart: 'Pimienta, Lavanda', base: 'Ámbar, Almizcle, Vainilla' }
+            },
+            'armaf_odyssey_aqua': {
+                category: 'perfumes', gender: 'hombre', brand: 'Armaf', title: 'Odyssey Aqua EDP 3.4oz', desc: 'Notas marinas saladas mezcladas con toques dulces y aromáticos.', img: 'https://images.unsplash.com/photo-1498612753354-772a30629934?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,000 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$110 MXN', 'Decant 10ml': '$185 MXN' },
+                notes: [{ name: 'Acuático', icon: 'fa-water', level: '95%', color: 'bg-blue-400' }, { name: 'Dulce', icon: 'fa-candy-cane', level: '75%', color: 'bg-pink-300' }, { name: 'Aromático', icon: 'fa-leaf', level: '70%', color: 'bg-green-400' }],
+                detailedNotes: { top: 'Pomelo, Notas marinas', heart: 'Pimienta negra, Violeta', base: 'Madera de Guaiac, Ámbar gris' }
+            },
+            'fw_liquid_brun': {
+                category: 'perfumes', gender: 'hombre', brand: 'Fragrance World', title: 'Liquid Brun EDP 3.4oz', desc: 'Vainilla, canela y praliné sobre maderas. El imán de cumplidos.', img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,150 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$120 MXN', 'Decant 10ml': '$200 MXN' },
+                notes: [{ name: 'Vainilla', icon: 'fa-ice-cream', level: '90%', color: 'bg-yellow-200' }, { name: 'Especiado Cálido', icon: 'fa-fire', level: '85%', color: 'bg-red-700' }, { name: 'Dulce', icon: 'fa-candy-cane', level: '75%', color: 'bg-pink-300' }],
+                detailedNotes: { top: 'Canela, Cardamomo', heart: 'Vainilla bourbon, Praliné', base: 'Almizcle, Maderas cálidas' }
+            },
+            'adg_profondo_parfum': {
+                category: 'perfumes', gender: 'hombre', brand: 'Giorgio Armani', title: 'Acqua Di Gio Profondo Parfum', desc: 'Notas marinas ultra intensas, minerales, pachulí y cítricos.', img: 'https://images.unsplash.com/photo-1518085250893-61b6cb413986?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$2,350 MXN', 'Decant 3ml': '$140 MXN', 'Decant 5ml': '$220 MXN', 'Decant 10ml': '$380 MXN' },
+                notes: [{ name: 'Marino', icon: 'fa-water', level: '95%', color: 'bg-blue-600' }, { name: 'Aromático', icon: 'fa-leaf', level: '80%', color: 'bg-green-500' }, { name: 'Cítrico', icon: 'fa-lemon', level: '75%', color: 'bg-yellow-400' }],
+                detailedNotes: { top: 'Notas Marinas, Aquozone', heart: 'Romero, Ciprés', base: 'Pachulí de Guatemala, Incienso' }
+            },
+            'issey_miyake_homme': {
+                category: 'perfumes', gender: 'hombre', brand: 'Issey Miyake', title: 'L\'eau D\'Issey Pour Homme', desc: 'Clásico atemporal. Yuzu, toques de loto y secado amaderado de vetiver.', img: 'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,090 MXN', 'Decant 3ml': '$70 MXN', 'Decant 5ml': '$115 MXN', 'Decant 10ml': '$195 MXN' },
+                notes: [{ name: 'Cítrico (Yuzu)', icon: 'fa-lemon', level: '90%', color: 'bg-yellow-300' }, { name: 'Fresco Floral', icon: 'fa-seedling', level: '80%', color: 'bg-stone-200' }, { name: 'Amaderado', icon: 'fa-tree', level: '70%', color: 'bg-stone-500' }],
+                detailedNotes: { top: 'Yuzu, Ciprés, Mandarina', heart: 'Nuez moscada, Loto azul', base: 'Vetiver, Almizcle, Cedro' }
+            },
+            'lattafa_vintage_radio': {
+                category: 'perfumes', gender: 'hombre', brand: 'Lattafa Pride', title: 'Vintage Radio EDP 3.4oz', desc: 'Ciruela jugosa, madera de palo santo calmante y lavanda.', img: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$940 MXN', 'Decant 3ml': '$65 MXN', 'Decant 5ml': '$105 MXN', 'Decant 10ml': '$180 MXN' },
+                notes: [{ name: 'Afrutado (Ciruela)', icon: 'fa-apple-whole', level: '85%', color: 'bg-purple-600' }, { name: 'Amaderado', icon: 'fa-tree', level: '85%', color: 'bg-amber-700' }, { name: 'Aromático', icon: 'fa-leaf', level: '75%', color: 'bg-purple-400' }],
+                detailedNotes: { top: 'Ciruela intensa, Lavanda', heart: 'Palo Santo, Pimienta', base: 'Sándalo, Vainilla cálida' }
+            },
+            'rasasi_hawas_ice': {
+                category: 'perfumes', gender: 'hombre', brand: 'Rasasi', title: 'Hawas Ice EDP 3.4oz', desc: 'Salida gélida de menta, manzana verde y limón dulce. Proyección nuclear.', img: 'https://images.unsplash.com/photo-1498612753354-772a30629934?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,220 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$130 MXN', 'Decant 10ml': '$220 MXN' },
+                notes: [{ name: 'Fresco / Hielo', icon: 'fa-snowflake', level: '95%', color: 'bg-blue-300' }, { name: 'Afrutado', icon: 'fa-apple-whole', level: '90%', color: 'bg-green-400' }, { name: 'Dulce', icon: 'fa-candy-cane', level: '75%', color: 'bg-pink-300' }],
+                detailedNotes: { top: 'Menta, Manzana verde', heart: 'Melón, Ciruela', base: 'Almizcle gris, Sándalo' }
+            },
+            'rasasi_hawas_kobra': {
+                category: 'perfumes', gender: 'hombre', brand: 'Rasasi', title: 'Hawas Kobra EDP 3.4oz', desc: 'Giro oscuro al original. Cuero suave, maderas oscuras y especias.', img: 'https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,170 MXN', 'Decant 3ml': '$75 MXN', 'Decant 5ml': '$125 MXN', 'Decant 10ml': '$210 MXN' },
+                notes: [{ name: 'Cuero', icon: 'fa-suitcase', level: '85%', color: 'bg-stone-800' }, { name: 'Amaderado', icon: 'fa-tree', level: '80%', color: 'bg-amber-900' }, { name: 'Especiado', icon: 'fa-fire', level: '75%', color: 'bg-red-800' }],
+                detailedNotes: { top: 'Bergamota, Manzana', heart: 'Madera oscura, Cuero', base: 'Ámbar, Almizcle, Pachulí' }
+            },
+            'rasasi_hawas_tropical': {
+                category: 'perfumes', gender: 'hombre', brand: 'Rasasi', title: 'Hawas Tropical EDP 3.4oz', desc: 'Explosión de frutas tropicales jugosas, notas acuáticas y fondo dulce.', img: 'https://images.unsplash.com/photo-1585218356057-e23f81e05d0e?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,210 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$130 MXN', 'Decant 10ml': '$215 MXN' },
+                notes: [{ name: 'Tropical', icon: 'fa-umbrella-beach', level: '95%', color: 'bg-orange-400' }, { name: 'Afrutado', icon: 'fa-apple-whole', level: '85%', color: 'bg-red-400' }, { name: 'Acuático', icon: 'fa-water', level: '75%', color: 'bg-blue-400' }],
+                detailedNotes: { top: 'Fruta de la pasión, Mango', heart: 'Notas marinas, Melón', base: 'Almizcle, Ámbar gris' }
+            },
+            'versace_dylan_blue': {
+                category: 'perfumes', gender: 'hombre', brand: 'Versace', title: 'Dylan Blue EDT 3.4oz', desc: 'Toronja brillante, ambroxan envolvente, pimienta negra e incienso.', img: 'https://images.unsplash.com/photo-1611131649987-92d4bd28659b?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,500 MXN', 'Decant 3ml': '$90 MXN', 'Decant 5ml': '$150 MXN', 'Decant 10ml': '$250 MXN' },
+                notes: [{ name: 'Ambarino/Ambroxan', icon: 'fa-gem', level: '90%', color: 'bg-blue-600' }, { name: 'Cítrico', icon: 'fa-lemon', level: '85%', color: 'bg-yellow-500' }, { name: 'Especiado Fresco', icon: 'fa-leaf', level: '75%', color: 'bg-green-700' }],
+                detailedNotes: { top: 'Bergamota, Pomelo', heart: 'Ambroxan, Pimienta negra', base: 'Incienso, Almizcle, Azafrán' }
+            },
+            'arabiyat_prestige_marwa': {
+                category: 'perfumes', gender: 'hombre', brand: 'Arabiyat Prestige', title: 'Marwa EDP 100ml', desc: 'Elegancia árabe moderna. Maderas ricas y dulzor ambarino de lujo.', img: 'https://images.unsplash.com/photo-1616843413587-9e3a37f7bbd8?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,200 MXN', 'Decant 3ml': '$80 MXN', 'Decant 5ml': '$130 MXN', 'Decant 10ml': '$215 MXN' },
+                notes: [{ name: 'Amaderado', icon: 'fa-tree', level: '90%', color: 'bg-amber-800' }, { name: 'Especiado Cálido', icon: 'fa-fire', level: '80%', color: 'bg-red-700' }, { name: 'Ámbar', icon: 'fa-gem', level: '75%', color: 'bg-amber-600' }],
+                detailedNotes: { top: 'Pimienta rosa, Azafrán', heart: 'Sándalo, Madera de Oud', base: 'Ámbar dorado, Vainilla' }
+            },
+            'dg_k_men': {
+                category: 'perfumes', gender: 'hombre', brand: 'Dolce & Gabbana', title: 'K EDP 3.3oz', desc: 'Naranja sanguina, limón siciliano y bayas de enebro. Para líderes.', img: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=500&auto=format&fit=crop', isPerfume: true,
+                prices: { 'Botella Completa': '$1,540 MXN', 'Decant 3ml': '$95 MXN', 'Decant 5ml': '$155 MXN', 'Decant 10ml': '$260 MXN' },
+                notes: [{ name: 'Cítrico', icon: 'fa-lemon', level: '90%', color: 'bg-orange-500' }, { name: 'Aromático', icon: 'fa-leaf', level: '80%', color: 'bg-green-600' }, { name: 'Amaderado', icon: 'fa-tree', level: '70%', color: 'bg-stone-700' }],
+                detailedNotes: { top: 'Naranja sanguina, Limón', heart: 'Pimiento, Salvia', base: 'Vetiver, Madera de cedro' }
+            },
+
+            // == GORRAS Y PLATA ==
+            'pulso_cubano': {
+                category: 'plata', brand: 'Plata Ley .925', title: 'Pulso Tejido Cubano', desc: 'Acabado de alta calidad, pulido espejo y eslabones sólidos.', img: 'https://images.unsplash.com/photo-1611591437281-460bfbe1220a?q=80&w=500&auto=format&fit=crop', isPerfume: false,
+                prices: { 'Única': 'Preguntar Precio' }, detailedNotes: null
+            },
+            'gorra_newera': {
+                category: 'gorras', brand: 'New Era', title: 'Gorra Edición Especial', desc: 'Ajuste estructurado impecable, corona alta y materiales premium.', img: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?q=80&w=500&auto=format&fit=crop', isPerfume: false,
+                prices: { 'Única': 'Preguntar Precio' }, detailedNotes: null
+            }
+        };
+
+        // --- VARIABLES DE ESTADO Y CONEXIÓN EN TIEMPO REAL CON FIREBASE ---
+        let productStock = {};
+        let productNew = {};
+        
+        // Cargar por defecto todos como true (stock) y false (nuevo)
+        for(let id in productsDB) { 
+            productStock[id] = true; 
+            productNew[id] = false; 
+        }
+
+        // Función para actualizar toda la UI de una vez
+        function refreshUI() {
+            renderPerfumes('todos');
+            renderCategory('gorras', 'gorras-grid');
+            renderCategory('plata', 'plata-grid');
+            build3DCarousel();
+            updateHardcodedCards();
+            if(!document.getElementById('admin-modal').classList.contains('hidden')){
+                if(!document.getElementById('admin-tab-inventario').classList.contains('hidden')){
+                    populateAdminList();
+                }
+            }
+        }
+
+        // 1. ESCUCHAR PRODUCTOS NUEVOS DE LA NUBE
+        db.collection("customProducts").onSnapshot((snapshot) => {
+            snapshot.forEach(doc => {
+                productsDB[doc.id] = doc.data();
+                if(productStock[doc.id] === undefined) productStock[doc.id] = true;
+                if(productNew[doc.id] === undefined) productNew[doc.id] = true;
+            });
+            refreshUI();
+        });
+
+        // 2. ESCUCHAR STOCK Y ESTADO "NUEVO" EN TIEMPO REAL
+        db.collection("settings").doc("stock").onSnapshot((doc) => {
+            if(doc.exists) {
+                const cloudStock = doc.data();
+                for(let id in cloudStock) productStock[id] = cloudStock[id];
+                refreshUI();
+            }
+        });
+        
+        db.collection("settings").doc("newStatus").onSnapshot((doc) => {
+            if(doc.exists) {
+                const cloudNew = doc.data();
+                for(let id in cloudNew) productNew[id] = cloudNew[id];
+                refreshUI();
+            }
+        });
+
+        // 3. ESCUCHAR RESEÑAS EN TIEMPO REAL
+        db.collection("reviews").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
+            const container = document.getElementById('reviews-container');
+            container.innerHTML = '';
+            
+            if(snapshot.empty) {
+                container.innerHTML = '<p class="text-stone-400 col-span-full">Aún no hay reseñas. ¡Sé el primero en comentar!</p>';
+                return;
+            }
+            
+            snapshot.forEach(doc => {
+                const rev = doc.data();
+                let starsHtml = '';
+                for(let i=0; i<5; i++) {
+                    if(i < rev.rating) starsHtml += '<i class="fas fa-star text-yellow-400 text-xs"></i>';
+                    else starsHtml += '<i class="fas fa-star text-stone-200 text-xs"></i>';
+                }
+                container.innerHTML += `
+                    <div class="bg-white p-5 border border-stone-100 rounded-xl shadow-sm hover:shadow-md transition fade-in">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-bold text-stone-900">${rev.name}</span>
+                            <div>${starsHtml}</div>
+                        </div>
+                        <p class="text-sm text-stone-600 mb-3">${rev.text}</p>
+                        <span class="text-[10px] uppercase font-bold text-stone-400 bg-stone-100 px-2 py-1 rounded">Compra Verificada</span>
+                    </div>
+                `;
+            });
+        });
+
+        // --- FUNCIONES DEL PANEL ADMIN FIREBASE ---
+        function switchAdminTab(tab) {
+            if(tab === 'inventario') {
+                document.getElementById('admin-tab-inventario').classList.remove('hidden');
+                document.getElementById('admin-tab-nuevo').classList.add('hidden');
+                document.getElementById('tab-btn-inventario').classList.replace('text-stone-400', 'text-stone-900');
+                document.getElementById('tab-btn-inventario').classList.replace('border-transparent', 'border-stone-900');
+                document.getElementById('tab-btn-nuevo').classList.replace('text-stone-900', 'text-stone-400');
+                document.getElementById('tab-btn-nuevo').classList.replace('border-stone-900', 'border-transparent');
+                populateAdminList();
+            } else {
+                document.getElementById('admin-tab-inventario').classList.add('hidden');
+                document.getElementById('admin-tab-nuevo').classList.remove('hidden');
+                document.getElementById('tab-btn-nuevo').classList.replace('text-stone-400', 'text-stone-900');
+                document.getElementById('tab-btn-nuevo').classList.replace('border-transparent', 'border-stone-900');
+                document.getElementById('tab-btn-inventario').classList.replace('text-stone-900', 'text-stone-400');
+                document.getElementById('tab-btn-inventario').classList.replace('border-stone-900', 'border-transparent');
+            }
+        }
+
+        function populateAdminList() {
+            const list = document.getElementById('admin-product-list');
+            list.innerHTML = '';
+            
+            const categories = [
+                { id: 'perfumes', title: 'Perfumería' },
+                { id: 'gorras', title: 'Gorras Premium' },
+                { id: 'plata', title: 'Pulsos de Plata' }
+            ];
+
+            categories.forEach(cat => {
+                let hasItems = false;
+                let htmlTemp = `<h4 class="font-bold uppercase tracking-widest text-stone-100 bg-stone-800 p-2 rounded mt-6 mb-3 text-sm">${cat.title}</h4>`;
+                
+                for(let id in productsDB) {
+                    if(productsDB[id].category === cat.id) {
+                        hasItems = true;
+                        const isStock = productStock[id] !== false;
+                        const isNew = productNew[id] === true;
+                        
+                        htmlTemp += `
+                            <div class="flex items-center justify-between p-3 bg-white border border-stone-200 rounded shadow-sm mb-2">
+                                <div class="flex flex-col w-7/12">
+                                    <span class="font-bold text-stone-800 text-sm truncate" title="${productsDB[id].title}">${productsDB[id].title}</span>
+                                    <span class="text-xs text-stone-500 uppercase">${productsDB[id].brand}</span>
+                                </div>
+                                <div class="flex items-center justify-end w-5/12 space-x-4">
+                                    <label class="flex flex-col items-center cursor-pointer">
+                                        <span class="text-[9px] font-bold text-blue-500 mb-1 uppercase">Nuevo</span>
+                                        <div class="relative inline-flex items-center">
+                                            <input type="checkbox" class="sr-only peer" ${isNew ? 'checked' : ''} onchange="toggleNew('${id}', this.checked)">
+                                            <div class="w-8 h-4 bg-stone-200 rounded-full peer peer-checked:bg-blue-500 peer-focus:ring-2 peer-focus:ring-blue-300 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
+                                        </div>
+                                    </label>
+                                    <label class="flex flex-col items-center cursor-pointer">
+                                        <span class="text-[9px] font-bold text-green-600 mb-1 uppercase">Stock</span>
+                                        <div class="relative inline-flex items-center">
+                                            <input type="checkbox" class="sr-only peer" ${isStock ? 'checked' : ''} onchange="toggleStock('${id}', this.checked)">
+                                            <div class="w-8 h-4 bg-stone-200 rounded-full peer peer-checked:bg-green-500 peer-focus:ring-2 peer-focus:ring-green-300 after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+                if(hasItems) list.innerHTML += htmlTemp;
+            });
+        }
+
+        function openAdmin() {
+            let pwd = prompt("Ingresa la contraseña de administrador:");
+            if(pwd === "admin") {
+                switchAdminTab('inventario');
+                document.getElementById('admin-modal').classList.remove('hidden');
+            } else {
+                if(pwd !== null) alert("Contraseña incorrecta");
+            }
+        }
+        
+        // Guardar cambios directamente en Firebase (usamos merge: true para no borrar otros datos)
+        function toggleStock(id, status) {
+            productStock[id] = status;
+            db.collection("settings").doc("stock").set({ [id]: status }, { merge: true });
+        }
+        function toggleNew(id, status) {
+            productNew[id] = status;
+            db.collection("settings").doc("newStatus").set({ [id]: status }, { merge: true });
+        }
+        
+        function closeAdmin() {
+            document.getElementById('admin-modal').classList.add('hidden');
+        }
+
+        function toggleNewPerfumeFields() {
+            const cat = document.getElementById('new-cat').value;
+            const perfFields = document.getElementById('new-perfume-fields');
+            if(cat.startsWith('perfume')) perfFields.classList.remove('hidden');
+            else perfFields.classList.add('hidden');
+        }
+
+        function getBase64(file) {
+           return new Promise((resolve, reject) => {
+             const reader = new FileReader();
+             reader.readAsDataURL(file);
+             reader.onload = () => resolve(reader.result);
+             reader.onerror = error => reject(error);
+           });
+        }
+
+        function autoSearchNotes() {
+            const title = document.getElementById('new-title').value.toLowerCase();
+            const brand = document.getElementById('new-brand').value.toLowerCase();
+            if(!title || !brand) return alert("Por favor, llena primero el Nombre y la Marca.");
+            
+            const btn = document.getElementById('btn-auto-search');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Buscando...';
+            btn.classList.replace('bg-stone-900', 'bg-blue-600');
+            
+            setTimeout(() => {
+                let s="Bergamota, Mandarina", c="Jazmín, Notas Especiadas", b="Almizcle Blanco, Madera de Cedro";
+                let ac1="Cítrico", ac2="Fresco", ac3="Amaderado";
+                
+                const searchStr = title + " " + brand;
+                if(searchStr.includes('oud') || searchStr.includes('intense') || searchStr.includes('black') || searchStr.includes('nuit')) {
+                    s="Pimienta Rosa, Azafrán"; c="Rosa de Damasco, Madera de Oud"; b="Pachulí, Cuero, Vainilla Oscura";
+                    ac1="Amaderado"; ac2="Especiado"; ac3="Ámbar";
+                } else if(searchStr.includes('sweet') || searchStr.includes('vanilla') || searchStr.includes('candy') || searchStr.includes('cloud')) {
+                    s="Frutos Rojos, Pera"; c="Vainilla Bourbon, Praliné"; b="Almizcle, Leche Caliente";
+                    ac1="Dulce"; ac2="Vainilla"; ac3="Gourmand";
+                } else if(searchStr.includes('aqua') || searchStr.includes('blue') || searchStr.includes('ocean')) {
+                    s="Notas Marinas, Toronja"; c="Hoja de Violeta, Romero"; b="Ambroxan, Incienso Mineral";
+                    ac1="Acuático"; ac2="Fresco"; ac3="Aromático";
+                }
+
+                document.getElementById('new-note-top').value = s;
+                document.getElementById('new-note-heart').value = c;
+                document.getElementById('new-note-base').value = b;
+                document.getElementById('new-accord-1').value = ac1;
+                document.getElementById('new-accord-2').value = ac2;
+                document.getElementById('new-accord-3').value = ac3;
+                
+                btn.innerHTML = '<i class="fas fa-check mr-2"></i> ¡Notas Encontradas!';
+                btn.classList.replace('bg-blue-600', 'bg-green-600');
+                
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fas fa-globe mr-2"></i> Autocompletar de la web';
+                    btn.classList.replace('bg-green-600', 'bg-stone-900');
+                }, 3000);
+            }, 1500); 
+        }
+
+        // GUARDAR NUEVO PRODUCTO EN FIREBASE
+        async function saveNewProduct() {
+            const title = document.getElementById('new-title').value;
+            const brand = document.getElementById('new-brand').value;
+            const catVal = document.getElementById('new-cat').value;
+            const desc = document.getElementById('new-desc').value;
+            const price = document.getElementById('new-price').value;
+            const fileInput = document.getElementById('new-img');
+            
+            let imgBase64 = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=500&auto=format&fit=crop';
+            if(fileInput.files.length > 0) {
+                imgBase64 = await getBase64(fileInput.files[0]);
+            }
+            
+            let isPerfume = false;
+            let category = '';
+            let gender = '';
+            if(catVal.startsWith('perfume')) {
+                isPerfume = true;
+                category = 'perfumes';
+                gender = catVal.split('_')[1];
+            } else {
+                category = catVal;
+            }
+            
+            let newProd = { category, gender, brand, title, desc, img: imgBase64, isPerfume };
+            
+            if(isPerfume) {
+                newProd.prices = {
+                    'Botella Completa': price,
+                    'Decant 3ml': '$80 MXN',
+                    'Decant 5ml': '$130 MXN',
+                    'Decant 10ml': '$220 MXN'
+                };
+                newProd.detailedNotes = {
+                    top: document.getElementById('new-note-top').value || 'Sin especificar',
+                    heart: document.getElementById('new-note-heart').value || 'Sin especificar',
+                    base: document.getElementById('new-note-base').value || 'Sin especificar'
+                };
+                
+                function getIconColor(ac) {
+                    let a = ac.toLowerCase();
+                    if(a.includes('dulce') || a.includes('vainilla') || a.includes('gourmand')) return {i: 'fa-candy-cane', c: 'bg-pink-400'};
+                    if(a.includes('cítrico')) return {i: 'fa-lemon', c: 'bg-yellow-400'};
+                    if(a.includes('madera') || a.includes('amaderado')) return {i: 'fa-tree', c: 'bg-amber-800'};
+                    if(a.includes('fresco') || a.includes('acuático')) return {i: 'fa-water', c: 'bg-blue-400'};
+                    if(a.includes('ámbar')) return {i: 'fa-gem', c: 'bg-amber-600'};
+                    if(a.includes('frutal') || a.includes('afrutado')) return {i: 'fa-apple-whole', c: 'bg-red-400'};
+                    if(a.includes('especiado')) return {i: 'fa-fire', c: 'bg-red-600'};
+                    return {i: 'fa-leaf', c: 'bg-green-500'};
+                }
+                
+                newProd.notes = [];
+                for(let i=1; i<=3; i++) {
+                    let ac = document.getElementById('new-accord-'+i).value;
+                    if(ac) {
+                        let map = getIconColor(ac);
+                        newProd.notes.push({ name: ac, icon: map.i, level: (100 - (i*10))+'%', color: map.c });
+                    }
+                }
+            } else {
+                newProd.prices = { 'Única': price };
+                newProd.detailedNotes = null;
+            }
+            
+            const newId = 'custom_' + Date.now();
+            
+            // Subir a Firebase Firestore
+            db.collection("customProducts").doc(newId).set(newProd).then(() => {
+                // Marcar como NUEVO y EN STOCK por defecto
+                toggleStock(newId, true);
+                toggleNew(newId, true);
+                
+                alert("¡Producto subido a la nube con éxito!");
+                document.getElementById('form-add-product').reset();
+                switchAdminTab('inventario');
+            }).catch(error => {
+                console.error("Error al subir:", error);
+                alert("Error al subir el producto. Verifica tu conexión a internet o los permisos de Firebase.");
+            });
+        }
+
+        // --- SUBMIT DE RESEÑAS A FIREBASE ---
+        document.getElementById('review-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let name = document.getElementById('rev-name').value;
+            let rating = starInput.value;
+            let text = document.getElementById('rev-text').value;
+            if(rating == 0) { alert('Por favor selecciona una calificación de estrellas.'); return; }
+            
+            // Subir a la colección 'reviews'
+            db.collection("reviews").add({
+                name: name,
+                rating: parseInt(rating),
+                text: text,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            }).then(() => {
+                this.reset();
+                starInput.value = 0;
+                stars.forEach(s => s.classList.remove('active', 'hovered'));
+                alert('¡Gracias! Tu reseña ha sido publicada.');
+            }).catch(error => {
+                alert('Error al publicar la reseña.');
+            });
+        });
+
+        // --- LOGICA DE UI (Sin cambios) ---
+        function showView(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            window.scrollTo(0, 0); 
+            if(viewId === 'perfumes') renderPerfumes('todos');
+            if(viewId === 'gorras') renderCategory('gorras', 'gorras-grid');
+            if(viewId === 'plata') renderCategory('plata', 'plata-grid');
+        }
+
+        function createCard(id, data) {
+            const shortDesc = data.desc.length > 75 ? data.desc.substring(0, 75) + '...' : data.desc;
+            const displayPrice = data.prices['Botella Completa'] || data.prices['Única'];
+            const inStock = productStock[id] !== false;
+            const isNew = productNew[id] === true;
+            
+            return `
+            <div class="product-card bg-white border border-stone-200 rounded-lg overflow-hidden flex flex-col cursor-pointer ${!inStock ? 'opacity-80' : ''}" onclick="openModal('${id}')">
+                ${!inStock ? `<div class="out-of-stock-overlay"><div class="out-of-stock-badge">Agotado</div></div>` : ''}
+                ${isNew && inStock ? `<div class="absolute top-2 left-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded z-30 shadow uppercase tracking-widest">Nuevo</div>` : ''}
+                <div class="h-64 bg-stone-100 p-6 flex items-center justify-center relative">
+                    <img src="${data.img}" loading="lazy" class="max-h-full object-contain drop-shadow ${!inStock ? 'grayscale' : ''}">
+                </div>
+                <div class="p-6 flex-grow flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs uppercase tracking-wider text-stone-400 font-semibold">${data.brand}</span>
+                        <h3 class="font-bold text-lg text-stone-950 mt-1">${data.title}</h3>
+                        <div class="info-overlay text-sm text-stone-600">${shortDesc}</div>
+                    </div>
+                    <div class="mt-4"><span class="text-xl font-bold ${inStock ? 'text-stone-900' : 'text-stone-400 line-through'}">${displayPrice}</span></div>
+                </div>
+            </div>`;
+        }
+
+        function renderCategory(category, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            for(let id in productsDB) {
+                if(productsDB[id].category === category) container.innerHTML += createCard(id, productsDB[id]);
+            }
+        }
+
+        function renderPerfumes(filter) {
+            const container = document.getElementById('perfumes-grid');
+            container.innerHTML = '';
+            for(let id in productsDB) {
+                if(productsDB[id].category === 'perfumes' && (filter === 'todos' || productsDB[id].gender === filter || productsDB[id].gender === 'todos')) {
+                    container.innerHTML += createCard(id, productsDB[id]);
+                }
+            }
+        }
+
+        function filterPerfumes(filter) {
+            document.querySelectorAll('.perf-filter-btn').forEach(btn => {
+                btn.classList.remove('text-stone-900', 'border-b-2', 'border-stone-900');
+                btn.classList.add('text-stone-400');
+            });
+            document.getElementById('btn-perf-' + filter).classList.remove('text-stone-400');
+            document.getElementById('btn-perf-' + filter).classList.add('text-stone-900', 'border-b-2', 'border-stone-900');
+            renderPerfumes(filter);
+        }
+
+        function updateHardcodedCards() {
+            document.querySelectorAll('.product-card').forEach(card => {
+                const onclickAttr = card.getAttribute('onclick');
+                if(onclickAttr && onclickAttr.includes('openModal')) {
+                    const match = onclickAttr.match(/'([^']+)'/);
+                    if(match) {
+                        const id = match[1];
+                        if(!productsDB[id]) return; 
+                        
+                        const inStock = productStock[id] !== false;
+                        const isNew = productNew[id] === true;
+
+                        const oldOverlay = card.querySelector('.out-of-stock-overlay');
+                        if(oldOverlay) oldOverlay.remove();
+                        const oldNew = card.querySelector('.new-badge');
+                        if(oldNew) oldNew.remove();
+
+                        const img = card.querySelector('img');
+                        const price = card.querySelector('span.text-lg.font-bold');
+
+                        if(!inStock) {
+                            card.classList.add('opacity-80');
+                            card.insertAdjacentHTML('afterbegin', `<div class="out-of-stock-overlay absolute inset-0 bg-white/70 backdrop-blur-[2px] z-20 flex items-center justify-center pointer-events-none"><div class="out-of-stock-badge bg-red-500 text-white px-4 py-2 rounded-full font-bold uppercase tracking-widest -rotate-12 shadow-lg">Agotado</div></div>`);
+                            if(img) img.classList.add('grayscale');
+                            if(price) { price.classList.remove('text-stone-900'); price.classList.add('text-stone-400', 'line-through'); }
+                        } else {
+                            card.classList.remove('opacity-80');
+                            if(img) img.classList.remove('grayscale');
+                            if(price) { price.classList.add('text-stone-900'); price.classList.remove('text-stone-400', 'line-through'); }
+                            if(isNew) card.insertAdjacentHTML('afterbegin', `<div class="new-badge absolute top-2 left-2 bg-blue-500 text-white text-[10px] font-bold px-2 py-1 rounded z-30 shadow uppercase tracking-widest">Nuevo</div>`);
+                        }
+                    }
+                }
+            });
+        }
+
+        function build3DCarousel() {
+            const spinner = document.getElementById('carousel-3d-spinner');
+            spinner.innerHTML = '';
+            
+            let items = Object.entries(productsDB).sort((a,b) => (productNew[b[0]] ? 1 : 0) - (productNew[a[0]] ? 1 : 0)).slice(0, 8);
+            const total = items.length;
+            
+            items.forEach(([id, p], index) => {
+                const angle = (360 / total) * index;
+                const transformStr = `rotateY(${angle}deg) translateZ(clamp(200px, 40vw, 450px)) scaleX(0.714)`;
+                
+                const isNew = productNew[id] === true;
+                const inStock = productStock[id] !== false;
+                const badgeHtml = (isNew && inStock) ? `<div class="absolute top-2 right-2 bg-blue-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow z-20 uppercase tracking-widest">Nuevo</div>` : '';
+
+                spinner.innerHTML += `
+                    <div class="carousel-3d-item flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-2" 
+                         style="transform: ${transformStr};"
+                         onclick="openModal('${id}')">
+                        ${badgeHtml}
+                        <div class="h-3/5 bg-stone-100 flex items-center justify-center p-4 rounded-t-[12px] relative overflow-hidden">
+                            <img src="${p.img}" loading="lazy" class="max-h-full object-contain mix-blend-multiply drop-shadow-md ${!inStock ? 'grayscale opacity-70' : ''}">
+                            ${!inStock ? '<div class="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-[1px]"><span class="bg-red-500 text-white text-[10px] font-bold px-2 py-1 rounded-full uppercase -rotate-12">Agotado</span></div>' : ''}
+                        </div>
+                        <div class="p-4 text-center h-2/5 flex flex-col justify-center bg-white rounded-b-[12px]">
+                            <span class="text-[10px] font-bold uppercase text-stone-400">${p.brand}</span>
+                            <h4 class="text-sm font-bold text-stone-800 leading-tight mt-1 truncate">${p.title}</h4>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        let menuOpen = false;
+        function toggleMenu() {
+            const menu = document.getElementById('dropdown-menu');
+            const icon = document.getElementById('menu-icon');
+            menuOpen = !menuOpen;
+            if(menuOpen) {
+                menu.classList.remove('opacity-0', 'pointer-events-none', '-translate-y-2');
+                menu.classList.add('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                menu.classList.add('opacity-0', 'pointer-events-none', '-translate-y-2');
+                menu.classList.remove('opacity-100', 'pointer-events-auto', 'translate-y-0');
+                icon.classList.add('fa-bars');
+                icon.classList.remove('fa-xmark');
+            }
+        }
+
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 4000);
+
+        let storyTimeout;
+        function openStory(imgUrl, caption) {
+            document.getElementById('story-img').src = imgUrl;
+            document.getElementById('story-caption').innerText = caption;
+            document.getElementById('story-modal').classList.remove('hidden');
+            
+            const progress = document.getElementById('story-progress');
+            progress.style.transition = 'none';
+            progress.style.width = '0%';
+            
+            setTimeout(() => {
+                progress.style.transition = 'width 5s linear';
+                progress.style.width = '100%';
+            }, 50);
+            
+            storyTimeout = setTimeout(() => { closeStory(); }, 5000);
+        }
+
+        function closeStory() {
+            document.getElementById('story-modal').classList.add('hidden');
+            clearTimeout(storyTimeout);
+        }
+
+        const stars = document.querySelectorAll('#star-selector i');
+        const starInput = document.getElementById('rev-stars');
+        stars.forEach(star => {
+            star.addEventListener('mouseover', function() {
+                let val = this.getAttribute('data-val');
+                stars.forEach(s => s.classList.remove('hovered'));
+                for(let i=0; i<val; i++) { stars[i].classList.add('hovered'); }
+            });
+            star.addEventListener('mouseout', function() {
+                stars.forEach(s => s.classList.remove('hovered'));
+            });
+            star.addEventListener('click', function() {
+                let val = this.getAttribute('data-val');
+                starInput.value = val;
+                stars.forEach(s => s.classList.remove('active'));
+                for(let i=0; i<val; i++) { stars[i].classList.add('active'); }
+            });
+        });
+
+        const modal = document.getElementById('product-modal');
+        function openModal(productId) {
+            const data = productsDB[productId];
+            const inStock = productStock[productId] !== false;
+            
+            document.getElementById('modal-brand').innerText = data.brand;
+            document.getElementById('modal-title').innerText = data.title + (inStock ? '' : ' (AGOTADO)');
+            document.getElementById('modal-desc').innerText = data.desc;
+            document.getElementById('modal-img').src = data.img;
+            document.getElementById('modal-img').style.filter = inStock ? 'none' : 'grayscale(100%)';
+            
+            const decantsSection = document.getElementById('modal-decants-section');
+            const decantsContainer = document.getElementById('decants-container');
+            const notesPanel = document.getElementById('modal-fragrantica-notes');
+            const notesContainer = document.getElementById('notes-container');
+            const detailedNotes = document.getElementById('modal-detailed-notes');
+            const waBtn = document.getElementById('modal-wa-btn');
+            
+            if(data.isPerfume) {
+                decantsSection.classList.remove('hidden');
+                decantsContainer.innerHTML = '';
+                let index = 0;
+                for(let size in data.prices) {
+                    const isSelected = index === 0;
+                    decantsContainer.innerHTML += `
+                        <button onclick="updatePresentation('${productId}', '${size}')" id="btn-size-${size.replace(/\s+/g, '-')}"
+                                ${!inStock ? 'disabled' : ''}
+                                class="size-btn px-4 py-2 text-xs font-bold uppercase rounded border transition-all duration-200 ${!inStock ? 'opacity-50 cursor-not-allowed' : ''} ${isSelected ? 'bg-stone-900 text-white border-stone-900' : 'bg-white text-stone-800 border-stone-200 hover:border-stone-900'}">
+                            ${size}
+                        </button>
+                    `;
+                    if(isSelected) updatePresentation(productId, size);
+                    index++;
+                }
+                
+                notesPanel.classList.remove('hidden');
+                notesContainer.innerHTML = '';
+                data.notes.forEach(note => {
+                    notesContainer.innerHTML += `
+                        <div>
+                            <div class="flex justify-between text-xs font-bold uppercase text-stone-600 mb-1">
+                                <span><i class="fas ${note.icon} mr-2 text-stone-400"></i>${note.name}</span>
+                            </div>
+                            <div class="w-full bg-stone-200 rounded-full h-1.5">
+                                <div class="note-bar-fill ${note.color} h-1.5 rounded-full" style="width: 0%" data-target="${note.level}"></div>
+                            </div>
+                        </div>`;
+                });
+                
+                if(data.detailedNotes) {
+                    detailedNotes.classList.remove('hidden');
+                    document.getElementById('note-top').innerText = data.detailedNotes.top;
+                    document.getElementById('note-heart').innerText = data.detailedNotes.heart;
+                    document.getElementById('note-base').innerText = data.detailedNotes.base;
+                } else {
+                    detailedNotes.classList.add('hidden');
+                }
+                setTimeout(() => { document.querySelectorAll('.note-bar-fill').forEach(bar => { bar.style.width = bar.getAttribute('data-target'); }); }, 150);
+            } else {
+                decantsSection.classList.add('hidden');
+                notesPanel.classList.add('hidden');
+                document.getElementById('modal-price').innerText = data.prices['Única'];
+                waBtn.href = `https://wa.me/524641888315?text=${encodeURIComponent('Hola! Me interesa el producto: ' + data.title)}`;
+            }
+
+            if(!inStock) {
+                waBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                waBtn.classList.add('bg-stone-400', 'cursor-not-allowed', 'pointer-events-none');
+                waBtn.innerHTML = '<i class="fas fa-ban mr-2 text-xl"></i> Agotado';
+            } else {
+                waBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                waBtn.classList.remove('bg-stone-400', 'cursor-not-allowed', 'pointer-events-none');
+                waBtn.innerHTML = '<i class="fab fa-whatsapp mr-2 text-xl"></i> Solicitar';
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function updatePresentation(productId, size) {
+            const data = productsDB[productId];
+            document.getElementById('modal-price').innerText = data.prices[size];
+            document.querySelectorAll('.size-btn').forEach(btn => {
+                if(!btn.classList.contains('opacity-50')) {
+                    btn.classList.remove('bg-stone-900', 'text-white', 'border-stone-900');
+                    btn.classList.add('bg-white', 'text-stone-800', 'border-stone-200');
+                }
+            });
+            const selectedBtn = document.getElementById(`btn-size-${size.replace(/\s+/g, '-')}`);
+            if(selectedBtn && !selectedBtn.classList.contains('opacity-50')) {
+                selectedBtn.classList.remove('bg-white', 'text-stone-800', 'border-stone-200');
+                selectedBtn.classList.add('bg-stone-900', 'text-white', 'border-stone-900');
+            }
+            document.getElementById('modal-wa-btn').href = `https://wa.me/524641888315?text=${encodeURIComponent(`Hola! Me interesa el producto: ${data.title} (${size})`)}`;
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.querySelectorAll('.note-bar-fill').forEach(bar => bar.style.width = '0%');
+        }
+
+        modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+        
+        // El renderizado inicial ahora está controlado directamente por las escuchas de Firebase (onSnapshot)
+    </script>
+</body>
+</html>
