@@ -854,7 +854,7 @@
             }
         });
 
-        // 3. ESCUCHAR RESEÑAS EN TIEMPO REAL
+// 3. ESCUCHAR RESEÑAS EN TIEMPO REAL
         db.collection("reviews").orderBy("timestamp", "desc").onSnapshot((snapshot) => {
             const container = document.getElementById('reviews-container');
             container.innerHTML = '';
@@ -871,12 +871,20 @@
                     if(i < rev.rating) starsHtml += '<i class="fas fa-star text-yellow-400 text-xs"></i>';
                     else starsHtml += '<i class="fas fa-star text-stone-200 text-xs"></i>';
                 }
+
+                // Si hay foto, armamos la etiqueta de imagen
+                let imageHtml = '';
+                if(rev.img) {
+                    imageHtml = `<img src="${rev.img}" class="w-full h-32 object-cover rounded-lg mb-3 shadow-sm border border-stone-200" alt="Foto de cliente">`;
+                }
+
                 container.innerHTML += `
                     <div class="bg-white p-5 border border-stone-100 rounded-xl shadow-sm hover:shadow-md transition fade-in">
                         <div class="flex items-center justify-between mb-3">
                             <span class="font-bold text-stone-900">${rev.name}</span>
                             <div>${starsHtml}</div>
                         </div>
+                        ${imageHtml}
                         <p class="text-sm text-stone-600 mb-3">${rev.text}</p>
                         <span class="text-[10px] uppercase font-bold text-stone-400 bg-stone-100 px-2 py-1 rounded">Compra Verificada</span>
                     </div>
